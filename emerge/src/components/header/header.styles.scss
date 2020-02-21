@@ -10,6 +10,14 @@
       width: 70px;
       padding: 25px;
     }
+
+    .logo {
+      height: 100%;
+      width: 70px;
+      padding: 25px;
+      object-fit: cover;
+      transform: scale(7,7);
+    }
   
     .options {
       width: 50%;
