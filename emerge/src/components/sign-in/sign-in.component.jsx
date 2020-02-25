@@ -5,7 +5,7 @@ import './sign-in.styles.scss';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 
-//import { auth } from '../../firebase/firebase.util';
+import { auth } from '../../firebase/firebase.util';
 
 class SignIn extends React.Component{
     constructor(props) {
@@ -23,14 +23,12 @@ handleSubmit = async event => {
 
     const { email, password } = this.state;
 
-    // try {
-    //     await auth.signInWithEmailAndPassword(email, password);
-    //     this.setState({email: '', password: ''});
-    // } catch (error) {
-    //     console.log(error);
-    // }
-
-
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        this.setState({email: '', password: ''});
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 handleChange = event => {
@@ -62,10 +60,6 @@ render () {
                 required/>
                 <div className='buttons'>
                 <CustomButton type='submit'> Sign In </CustomButton>
-                {/* <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
-                     {' '}
-                     Sign In with Google{' '}
-                     </CustomButton> */}
                 </div>
             </form>
         </div>

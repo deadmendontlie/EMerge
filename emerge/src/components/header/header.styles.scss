@@ -9,6 +9,7 @@
       height: 100%;
       width: 70px;
       padding: 25px;
+      overflow: hidden;
     }
 
     .logo {
@@ -16,7 +17,7 @@
       width: 70px;
       padding: 25px;
       object-fit: cover;
-      transform: scale(7,7);
+      transform: scale(6.1,6.1);
     }
   
     .options {

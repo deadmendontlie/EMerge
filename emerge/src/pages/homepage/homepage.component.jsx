@@ -2,7 +2,7 @@ import React from 'react';
 
 const HomePage = () => (
     <div className='homepage'>
-        HelloWorld from Homepage
+        Welcome to Emerge Time to save Lives
     </div>
 )
 
