@@ -24,7 +24,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
             },
           ),
         ),
-        body: Column:(
+        body: Column(
             children: [
                 Text(
                     "Please Select What Services are Required(Defaults to Just Medical)",

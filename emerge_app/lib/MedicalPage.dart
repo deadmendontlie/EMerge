@@ -26,8 +26,11 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
             },
           ),
         ),
-        body: Column:(
+        body: Column(
             children: [
+              //Remember later to center these and to add the scrolling functionality to the screen and put column inside it
+              //Also add the drop downs and stuff later
+              //Once this is all done and we have the http methods and stuff add them later and maybe have it make a json file on submit
                 Text(
                     "Please Select What Services are Required(Defaults to Just Medical)",
                     style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
@@ -63,6 +66,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 ),
             ],
         ),
+      )
     );
   }
 }
