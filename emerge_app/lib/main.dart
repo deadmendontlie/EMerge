@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'Page1.dart';
-import 'Page2.dart';
-import 'Page3.dart';
-import 'Page4.dart';
+import 'MedicalPage.dart';
+import 'PolicePage.dart';
+import 'FirePage.dart';
+import 'TipsPage.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -19,10 +19,10 @@ class MyApp extends StatelessWidget {
       //starting page
       '/': (context) => StartScreen(),
       //other pages
-      '/page1': (context) => Page1(),
-      '/page2': (context) => Page2(),
-      '/page3': (context) => Page3(),
-      '/page4': (context) => Page4(),
+      '/MedicalPage': (context) => MedicalPage(),
+      '/PolicePage': (context) => PolicePage(),
+      '/FirePage': (context) => FirePage(),
+      '/TipsPage': (context) => TipsPage(),
     });
   }
 }
@@ -41,37 +41,37 @@ class StartScreen extends StatelessWidget {
           children: [
             Center(
               child: RaisedButton(
-                child: Text('Page1'),
+                child: Text('MedicalPage'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/page1');
+                  Navigator.pushNamed(context, '/MedicalPage');
                 },
               ),
             ),
             Center(
               child: RaisedButton(
-                child: Text('Page2'),
+                child: Text('PolicePage'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/page2');
+                  Navigator.pushNamed(context, '/PolicePage');
                 },
               ),
             ),
             Center(
               child: RaisedButton(
-                child: Text('Page3'),
+                child: Text('FirePage'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/page3');
+                  Navigator.pushNamed(context, '/FirePage');
                 },
               ),
             ),
             Center(
               child: RaisedButton(
-                child: Text('Page4'),
+                child: Text('TipsPage'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/page4');
+                  Navigator.pushNamed(context, '/TipsPage');
                 },
               ),
             ),
