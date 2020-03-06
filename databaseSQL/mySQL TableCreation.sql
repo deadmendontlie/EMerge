@@ -1,4 +1,4 @@
-CREATE TABLE `Administers` (
+CCREATE TABLE `Administers` (
   `administers_id` int(11) NOT NULL AUTO_INCREMENT,
   `admin_id` int(11) NOT NULL,
   `municipality_id` int(11) NOT NULL,
