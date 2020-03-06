@@ -9,7 +9,18 @@
       height: 100%;
       width: 70px;
       padding: 25px;
+      overflow: hidden;
     }
+
+    .logo {
+    //   height: 100%;
+    //   width: 70px;
+    //   padding: 25px;
+       padding-right: 2px;
+       padding-top: 4px;
+       object-fit: cover;
+       transform: scale(12,12);
+     }
   
     .options {
       width: 50%;
@@ -21,7 +32,35 @@
       .option {
         padding: 10px 15px;
         cursor: pointer;
+        
       }
     }
+      .Update {
+
+        .button {
+          min-width: 165px;
+          width: auto;
+          height: 40px;
+          letter-spacing: 0.5px;
+          line-height: 40px;
+          padding: 0 25px 0 25px;
+          font-size: 15px;
+          background-color: #32CD32;
+          color: black;
+          text-transform: uppercase;
+          font-family: 'Open Sans Condensed';
+          font-weight: bolder;
+          border: none;
+          cursor: pointer;
+          display: flex;
+          justify-content: center;
+        
+          &:hover {
+            background-color: black;
+            color: #32CD32;
+            border: 1px solid #32CD32;
+          }
+        }
+      }
   }
   
