@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, useTabState, Panel, usePanelState } from "@bumaga/tabs";
+import { Tabs, useTabState, Panel } from "@bumaga/tabs";
 import "./homepage.styles.scss";
 
 const cn = (...args) => args.filter(Boolean).join(' ')

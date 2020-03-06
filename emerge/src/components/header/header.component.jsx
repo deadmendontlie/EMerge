@@ -1,6 +1,6 @@
 import React from 'react';
-import { Route, Link, Redirect } from 'react-router-dom';
-import { Dropdown, ButtonGroup, Button, SplitButton, MenuItem} from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { auth } from '../../firebase/firebase.util';
 
 import { ReactComponent as Logo } from '../../assets/untitled.svg';
@@ -16,11 +16,6 @@ const Header = ({ currentUser }) => (
 
 {
     currentUser ? 
-        // <SplitButton bsStyle="primary" title="Update" look="flat" toggleLabel="V" className="Update" >
-        //     <button className="button">5 min </button>
-        //     <button className="button">30 min</button>
-        //     <button className="button">1 hr</button>
-        // </SplitButton>
         <div class="bootstrap-iso">
   <Dropdown as={ButtonGroup}>
   <Button variant="success">Update</Button>

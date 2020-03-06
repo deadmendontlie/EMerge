@@ -6,6 +6,7 @@ import './App.css';
 import HomePage from './pages/homepage/homepage.component';
 import SignInPage from './pages/sign-in/sign-in-page.component';
 import Header from './components/header/header.component';
+import adminPage from './pages/adminpage/adminpage.component';
 
 import { auth, createUserProfileDocument, } from './firebase/firebase.util';
 
@@ -62,6 +63,7 @@ class App extends React.Component {
               render={() => this.state.currentUser ? (<HomePage></HomePage>) : (<Redirect to='/signin'/>)}/>
           <Route exact path='/signin' 
               render={() => this.state.currentUser ? (<Redirect to='/'/>) : (<SignInPage/>)}/>
+          <Route exact path='/admin' component={adminPage}/>
         </Switch>
       </div>
 
