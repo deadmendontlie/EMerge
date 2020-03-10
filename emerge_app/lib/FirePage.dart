@@ -1,10 +1,8 @@
-
-
 import 'package:flutter/material.dart';
-class FirePage extends StatefulWidget{
+
+class FirePage extends StatefulWidget {
   @override
   _FirePageWidgetState createState() => _FirePageWidgetState();
-
 }
 
 class _FirePageWidgetState extends State<FirePage> {
@@ -12,6 +10,7 @@ class _FirePageWidgetState extends State<FirePage> {
   initState() {
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -57,16 +56,12 @@ class _FirePageWidgetState extends State<FirePage> {
                 child: Text('Submit'),
                 onPressed: () {
                   // Add Submission results later
-
                 },
               ),
             ),
           ],
         ),
-
       ),
     );
   }
-
-
 }

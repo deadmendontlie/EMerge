@@ -28,14 +28,12 @@ class MyApp extends StatelessWidget {
 }
 
 class StartScreen extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           title: Text('Start Screen'),
         ),
-
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -72,6 +70,14 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   // Navigate to the second screen using a named route
                   Navigator.pushNamed(context, '/TipsPage');
+                },
+              ),
+            ),
+            Center(
+              child: RaisedButton(
+                child: Text('Emergency'),
+                onPressed: () {
+                  //TODO add code to submit an emergency report
                 },
               ),
             ),
