@@ -25,41 +25,84 @@ class _FirePageWidgetState extends State<FirePage> {
             },
           ),
         ),
-        body: Column(
-          children: [
-            Text(
-              "Please Select What Services are Required(Defaults to just Fire Report)",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Please select what additional services are required",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Please Select Type of Report",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Please enter your name otherwise this will be submitted Anonymously",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Please submit your phone number(Not required)",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              "Enter any additional information below",
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Submit'),
-                onPressed: () {
-                  // Add Submission results later
-                },
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              //TODO Add the drop down menus and fill them with info
+              //TODO Make the text boxes nice and put extra info in them if needed
+              //TODO Add other things need for the text boxes and drop downs
+              //TODO Make the submit button work
+              Text(
+                "Please Select What Services are Required as well(Defaults to Just Fire)",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
-            ),
-          ],
+              DropdownButton<String>(
+                hint: Text('No other Assistance is needed'),
+                items: <String>['Medical', 'Police'].map((String value) {
+                  return new DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(value),
+                  );
+                }).toList(),
+                onChanged: (_) {},
+              ),
+              Text(
+                "Please Select What Services are Required",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+              ),
+              DropdownButton<String>(
+                hint: Text('No report type is selected'),
+                items: <String>['Fire', 'Gas Leak', 'Figure out more'].map((String value) {
+                  return new DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(value),
+                  );
+                }).toList(),
+                onChanged: (_) {},
+              ),
+              Text(
+                "Please enter your name otherwise this will be submitted Anonymously",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+              ),
+              TextFormField(
+                textAlign: TextAlign.left,
+                autocorrect: false,
+                showCursor: true,
+                decoration: new InputDecoration.collapsed(
+                    hintText: "Please enter your name"),
+              ),
+              Text(
+                "Please submit your phone number(Not required)",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+              ),
+              TextFormField(
+                textAlign: TextAlign.left,
+                autocorrect: false,
+                showCursor: true,
+                decoration: new InputDecoration.collapsed(
+                    hintText: "Please enter phone number"),
+              ),
+              Text(
+                "Enter any additional information below",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+              ),
+              TextFormField(
+                textAlign: TextAlign.left,
+                autocorrect: true,
+                showCursor: true,
+                decoration: new InputDecoration.collapsed(
+                    hintText: "Please enter phone number"),
+              ),
+              Center(
+                child: RaisedButton(
+                  child: Text('Submit'),
+                  onPressed: () {
+                    // Add Submission results later
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

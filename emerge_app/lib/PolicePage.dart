@@ -33,12 +33,12 @@ class _PolicePageWidgetState extends State<PolicePage> {
               //TODO Add other things need for the text boxes and drop downs
               //TODO Make the submit button work
               Text(
-                "Please Select What Services are Required as well(Defaults to Just Medical)",
+                "Please Select What Services are Required as well(Defaults to Just Police)",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               DropdownButton<String>(
-                hint: Text('No report type is selected'),
-                items: <String>['Fire', 'Police'].map((String value) {
+                hint: Text('No other Assistance is needed'),
+                items: <String>['Fire', 'Medical', 'Figure out more and change previous'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
@@ -52,7 +52,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
               ),
               DropdownButton<String>(
                 hint: Text('No report type is selected'),
-                items: <String>['Fire', 'Police'].map((String value) {
+                items: <String>['Fire', 'Medical'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),

@@ -42,7 +42,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
             ),
             DropdownButton<String>(
               hint: Text('No other Assistance is needed'),
-              items: <String>['Fire', 'Police'].map((String value) {
+              items: <String>['Fire', 'Police', 'Figure out more and change previous'].map((String value) {
                 return new DropdownMenuItem<String>(
                   value: value,
                   child: new Text(value),
