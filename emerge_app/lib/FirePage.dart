@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FirePage extends StatefulWidget {
   @override
@@ -32,6 +33,7 @@ class _FirePageWidgetState extends State<FirePage> {
               //TODO Make the text boxes nice and put extra info in them if needed
               //TODO Add other things need for the text boxes and drop downs
               //TODO Make the submit button work
+              //TODO add a verification pop up before they submit the report
               Text(
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
@@ -70,6 +72,10 @@ class _FirePageWidgetState extends State<FirePage> {
                 showCursor: true,
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter your name"),
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(256),
+                  BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                ],
               ),
               Text(
                 "Please submit your phone number(Not required)",
@@ -81,6 +87,10 @@ class _FirePageWidgetState extends State<FirePage> {
                 showCursor: true,
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter phone number"),
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(10),
+                  WhitelistingTextInputFormatter.digitsOnly,
+                ],
               ),
               Text(
                 "Enter any additional information below",
@@ -91,7 +101,11 @@ class _FirePageWidgetState extends State<FirePage> {
                 autocorrect: true,
                 showCursor: true,
                 decoration: new InputDecoration.collapsed(
-                    hintText: "Please enter phone number"),
+                    hintText: "Enter any other information (256 max)"),
+                inputFormatters: <TextInputFormatter>[
+                  LengthLimitingTextInputFormatter(256),
+                  BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                ],
               ),
               Center(
                 child: RaisedButton(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'MedicalPage.dart';
+import 'NonEmergenciesPage.dart';
 import 'PolicePage.dart';
 import 'FirePage.dart';
 import 'TipsPage.dart';
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
       '/PolicePage': (context) => PolicePage(),
       '/FirePage': (context) => FirePage(),
       '/TipsPage': (context) => TipsPage(),
+      '/NonEmergenciesPage': (context) => NonEmergenciesPage(),
     });
   }
 }
@@ -39,7 +41,7 @@ class StartScreen extends StatelessWidget {
           children: [
             Center(
               child: RaisedButton(
-                child: Text('MedicalPage'),
+                child: Text('Medical'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
                   Navigator.pushNamed(context, '/MedicalPage');
@@ -48,7 +50,7 @@ class StartScreen extends StatelessWidget {
             ),
             Center(
               child: RaisedButton(
-                child: Text('PolicePage'),
+                child: Text('Police'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
                   Navigator.pushNamed(context, '/PolicePage');
@@ -57,7 +59,7 @@ class StartScreen extends StatelessWidget {
             ),
             Center(
               child: RaisedButton(
-                child: Text('FirePage'),
+                child: Text('Fire'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
                   Navigator.pushNamed(context, '/FirePage');
@@ -66,7 +68,7 @@ class StartScreen extends StatelessWidget {
             ),
             Center(
               child: RaisedButton(
-                child: Text('TipsPage'),
+                child: Text('Tips'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
                   Navigator.pushNamed(context, '/TipsPage');
@@ -75,9 +77,27 @@ class StartScreen extends StatelessWidget {
             ),
             Center(
               child: RaisedButton(
+                child: Text('Non-Emergencies'),
+                onPressed: () {
+                  //TODO add a non-emergencies page and copy all of the code over
+                  // Navigate to the second screen using a named route
+                  Navigator.pushNamed(context, '/NonEmergenciesPage');
+                },
+              ),
+            ),
+            Center(
+              child: RaisedButton(
                 child: Text('Emergency'),
                 onPressed: () {
                   //TODO add code to submit an emergency report
+                },
+              ),
+            ),
+            Center(
+              child: RaisedButton(
+                child: Text('Report Status'),
+                onPressed: () {
+                  //TODO add code to check report statues and have it come up with a pop up
                 },
               ),
             ),
