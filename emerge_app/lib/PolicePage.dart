@@ -70,11 +70,18 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 textAlign: TextAlign.left,
                 autocorrect: false,
                 showCursor: true,
+                toolbarOptions: ToolbarOptions(
+                  cut: false,
+                  copy: false,
+                  selectAll: true,
+                  paste: false,
+                ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter your name"),
                 inputFormatters: <TextInputFormatter>[
-                  LengthLimitingTextInputFormatter(256),
-                  BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                  LengthLimitingTextInputFormatter(45),
+                  WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\s]')), //This will allow for letters and periods
+                  //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
                 ],
               ),
               Text(
@@ -85,11 +92,19 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 textAlign: TextAlign.left,
                 autocorrect: false,
                 showCursor: true,
+                keyboardType: TextInputType.number,
+                toolbarOptions: ToolbarOptions(
+                  cut: false,
+                  copy: false,
+                  selectAll: true,
+                  paste: false,
+                ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter phone number"),
                 inputFormatters: <TextInputFormatter>[
-                  LengthLimitingTextInputFormatter(10),
+                  LengthLimitingTextInputFormatter(14),
                   WhitelistingTextInputFormatter.digitsOnly,
+                  //WhitelistingTextInputFormatter(new RegExp('[\\-,1,2,3,4,5,6,7,8,9,0]')) //This will allow for numbers and -
                 ],
               ),
               Text(
@@ -100,11 +115,18 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 textAlign: TextAlign.left,
                 autocorrect: true,
                 showCursor: true,
+                toolbarOptions: ToolbarOptions(
+                  cut: false,
+                  copy: false,
+                  selectAll: true,
+                  paste: false,
+                ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Enter any other information (256 max)"),
                 inputFormatters: <TextInputFormatter>[
-                  LengthLimitingTextInputFormatter(265),
-                  BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                  LengthLimitingTextInputFormatter(256),
+                  WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters and periods
+                  //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
                 ],
               ),
               Center(

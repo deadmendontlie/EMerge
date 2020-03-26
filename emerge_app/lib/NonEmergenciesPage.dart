@@ -18,7 +18,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
         home: Scaffold(
           //blue header
           appBar: AppBar(
-            title: Text('NonEmergencies Report'),
+            title: Text('Non-Emergencies Report'),
             leading: IconButton(
               icon: Icon(Icons.arrow_back_ios),
               tooltip: 'Back',
@@ -40,32 +40,19 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 //TODO add a verification pop up before they submit the report
                 //This pge will be able to send to medical fire and police as well but will be labelled differently
                 Text(
-                  "Please Select What Services are Required as well(Defaults to Just NonEmergencies)",
+                  "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
                 DropdownButton<String>(
                   hint: Text('No other Assistance is needed'),
-                  items: <String>['Fire', 'Police', 'Fire and Police'].map((String value) {
+                  items: <String>['Fire', 'Police', 'Medical', 'Fire and Police',
+                  'Fire and Medical', 'Police and Medical'].map((String value) {
                     return new DropdownMenuItem<String>(
                       value: value,
                       child: new Text(value),
                     );
                   }).toList(),
                   onChanged: (String newValue) {},
-                ),
-                Text(
-                  "Please Select Type of Report",
-                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
-                ),
-                DropdownButton<String>(
-                  hint: Text('No report type is selected'),
-                  items: <String>['Heart Attack', 'Breathing Issue', 'Bleeding', 'Not clear'].map((String value) {
-                    return new DropdownMenuItem<String>(
-                      value: value,
-                      child: new Text(value),
-                    );
-                  }).toList(),
-                  onChanged: (_) {},
                 ),
                 Text(
                   "Please enter your name otherwise this will be submitted Anonymously",
@@ -75,11 +62,18 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   textAlign: TextAlign.left,
                   autocorrect: false,
                   showCursor: true,
+                  toolbarOptions: ToolbarOptions(
+                    cut: false,
+                    copy: false,
+                    selectAll: true,
+                    paste: false,
+                  ),
                   decoration: new InputDecoration.collapsed(
                       hintText: "Please enter your name"),
                   inputFormatters: <TextInputFormatter>[
-                    LengthLimitingTextInputFormatter(256),
-                    BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                    LengthLimitingTextInputFormatter(45),
+                    WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\s]')), //This will allow for letters and periods
+                    //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
                   ],
                 ),
                 Text(
@@ -90,11 +84,19 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   textAlign: TextAlign.left,
                   autocorrect: false,
                   showCursor: true,
+                  keyboardType: TextInputType.number,
+                  toolbarOptions: ToolbarOptions(
+                    cut: false,
+                    copy: false,
+                    selectAll: true,
+                    paste: false,
+                  ),
                   decoration: new InputDecoration.collapsed(
                       hintText: "Please enter phone number"),
                   inputFormatters: <TextInputFormatter>[
-                    LengthLimitingTextInputFormatter(10),
+                    LengthLimitingTextInputFormatter(14),
                     WhitelistingTextInputFormatter.digitsOnly,
+                    //WhitelistingTextInputFormatter(new RegExp('[\\-,1,2,3,4,5,6,7,8,9,0]')) //This will allow for numbers and -
                   ],
                 ),
                 Text(
@@ -105,11 +107,18 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   textAlign: TextAlign.left,
                   autocorrect: true,
                   showCursor: true,
+                  toolbarOptions: ToolbarOptions(
+                    cut: false,
+                    copy: false,
+                    selectAll: true,
+                    paste: false,
+                  ),
                   decoration: new InputDecoration.collapsed(
                       hintText: "Enter any other information Enter any other information"),
                   inputFormatters: <TextInputFormatter>[
                     LengthLimitingTextInputFormatter(256),
-                    BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                    WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters and periods
+                    //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
                   ],
                 ),
                 Center(

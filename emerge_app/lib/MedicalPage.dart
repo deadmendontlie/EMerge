@@ -73,11 +73,18 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
               textAlign: TextAlign.left,
               autocorrect: false,
               showCursor: true,
+              toolbarOptions: ToolbarOptions(
+                cut: false,
+                copy: false,
+                selectAll: true,
+                paste: false,
+              ),
               decoration: new InputDecoration.collapsed(
                   hintText: "Please enter your name"),
               inputFormatters: <TextInputFormatter>[
-                LengthLimitingTextInputFormatter(256),
-                BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                LengthLimitingTextInputFormatter(45),
+                WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\s]')), //This will allow for letters and periods
+                //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
               ],
             ),
             Text(
@@ -88,11 +95,19 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
               textAlign: TextAlign.left,
               autocorrect: false,
               showCursor: true,
+              keyboardType: TextInputType.number,
+              toolbarOptions: ToolbarOptions(
+                cut: false,
+                copy: false,
+                selectAll: true,
+                paste: false,
+              ),
               decoration: new InputDecoration.collapsed(
                   hintText: "Please enter phone number"),
               inputFormatters: <TextInputFormatter>[
-                LengthLimitingTextInputFormatter(10),
+                LengthLimitingTextInputFormatter(14),
                 WhitelistingTextInputFormatter.digitsOnly,
+                //WhitelistingTextInputFormatter(new RegExp('[\\-,1,2,3,4,5,6,7,8,9,0]')) //This will allow for numbers and -
               ],
             ),
             Text(
@@ -103,18 +118,25 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
               textAlign: TextAlign.left,
               autocorrect: true,
               showCursor: true,
+              toolbarOptions: ToolbarOptions(
+                cut: false,
+                copy: false,
+                selectAll: true,
+                paste: false,
+              ),
               decoration: new InputDecoration.collapsed(
                   hintText: "Enter any other information Enter any other information"),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(256),
-                BlacklistingTextInputFormatter(new RegExp('[\\,]')),
+                WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters, spaces, and periods
+                //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
                 ],
             ),
             Center(
               child: RaisedButton(
                 child: Text('Submit'),
                 onPressed: () {
-                  // Add Submission results later
+                  //TODO Add Submission results later
                 },
               ),
             ),
