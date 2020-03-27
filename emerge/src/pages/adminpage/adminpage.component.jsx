@@ -2,10 +2,10 @@ import React from 'react';
 
 import './adminpage.styles.scss';
 
-const adminPage = ({ }) => (
+const AdminPage = () => (
  <div>
      <h1>Admin rules all</h1>
  </div>
 )
 
-export default adminPage;
+export default AdminPage;
