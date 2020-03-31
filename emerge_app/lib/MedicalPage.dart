@@ -12,6 +12,9 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
     super.initState();
   }
 
+  String service; //service selected in the drop down
+  String report;  //what type of report is selected
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -42,14 +45,18 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
             ),
             DropdownButton<String>(
-              hint: Text('No other Assistance is needed'),
-              items: <String>['Fire', 'Police', 'Fire and Police'].map((String value) {
+              hint: Text('Please Choose One'),
+              items: <String>['None','Fire', 'Police', 'Fire and Police'].map((String value) {
                 return new DropdownMenuItem<String>(
                   value: value,
                   child: new Text(value),
                 );
               }).toList(),
-              onChanged: (String newValue) {},
+              onChanged: (String changed) {
+                service = changed;
+                setState(() {});
+              },
+              value: service,
             ),
             Text(
               "Please Select Type of Report",
@@ -63,7 +70,11 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   child: new Text(value),
                 );
               }).toList(),
-              onChanged: (_) {},
+              onChanged: (String changed) {
+                report = changed;
+                setState(() {});
+              },
+              value: report,
             ),
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",

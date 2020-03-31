@@ -12,6 +12,9 @@ class _PolicePageWidgetState extends State<PolicePage> {
     super.initState();
   }
 
+  String service; //service selected in the drop down
+  String report;  //what type of report is selected
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -39,17 +42,21 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               DropdownButton<String>(
-                hint: Text('No other Assistance is needed'),
-                items: <String>['Fire', 'Medical', 'Figure out more and change previous'].map((String value) {
+                hint: Text('Please Choose One'),
+                items: <String>['None','Fire', 'Medical', 'Figure out more and change previous'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
                   );
                 }).toList(),
-                onChanged: (_) {},
+                onChanged: (String changed) {
+                  report = changed;
+                  setState(() {});
+                },
+                value: report,
               ),
               Text(
-                "Please Select What Services are Required",
+                "Please Select Type of Report",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               DropdownButton<String>(
@@ -60,7 +67,11 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     child: new Text(value),
                   );
                 }).toList(),
-                onChanged: (_) {},
+                onChanged: (String changed) {
+                  service = changed;
+                  setState(() {});
+                },
+                value: service,
               ),
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",

@@ -12,6 +12,9 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
     super.initState();
   }
 
+  String service; //service selected in the drop down
+  String report;  //what type of report is selected
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -44,15 +47,19 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
                 DropdownButton<String>(
-                  hint: Text('No other Assistance is needed'),
-                  items: <String>['Fire', 'Police', 'Medical', 'Fire and Police',
+                  hint: Text('Please Choose One'),
+                  items: <String>['None','Fire', 'Police', 'Medical', 'Fire and Police',
                   'Fire and Medical', 'Police and Medical'].map((String value) {
                     return new DropdownMenuItem<String>(
                       value: value,
                       child: new Text(value),
                     );
                   }).toList(),
-                  onChanged: (String newValue) {},
+                  onChanged: (String changed) {
+                    service = changed;
+                    setState(() {});
+                  },
+                  value: service,
                 ),
                 Text(
                   "Please enter your name otherwise this will be submitted Anonymously",
@@ -114,7 +121,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                     paste: false,
                   ),
                   decoration: new InputDecoration.collapsed(
-                      hintText: "Enter any other information Enter any other information"),
+                      hintText: "Enter any other information"),
                   inputFormatters: <TextInputFormatter>[
                     LengthLimitingTextInputFormatter(256),
                     WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters and periods

@@ -12,8 +12,12 @@ class _FirePageWidgetState extends State<FirePage> {
     super.initState();
   }
 
+  String service; //service selected in the drop down
+  String report;  //what type of report is selected
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -38,21 +42,26 @@ class _FirePageWidgetState extends State<FirePage> {
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
-              DropdownButton<String>(
-                hint: Text('No other Assistance is needed'),
-                items: <String>['Medical', 'Police'].map((String value) {
+              DropdownButton<String>(   //Service drop down
+
+                hint: Text('Please Choose One'),
+                items: <String>['None','Medical', 'Police'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
                   );
                 }).toList(),
-                onChanged: (_) {},
-              ),
+                onChanged: (String changed) {
+                  service = changed;
+                  setState(() {});
+                },
+                value: service,
+               ),
               Text(
                 "Please Select What Services are Required",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
-              DropdownButton<String>(
+              DropdownButton<String>(   //report drop down
                 hint: Text('No report type is selected'),
                 items: <String>['Fire', 'Gas Leak', 'Figure out more'].map((String value) {
                   return new DropdownMenuItem<String>(
@@ -60,7 +69,11 @@ class _FirePageWidgetState extends State<FirePage> {
                     child: new Text(value),
                   );
                 }).toList(),
-                onChanged: (_) {},
+                onChanged: (String changed) {
+                  report = changed;
+                  setState(() {});
+                },
+                value: report,
               ),
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
