@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
+import 'package:android_intent/android_intent.dart';
+import 'package:location/location.dart';
 
 class FirePage extends StatefulWidget {
   @override
@@ -7,17 +12,24 @@ class FirePage extends StatefulWidget {
 }
 
 class _FirePageWidgetState extends State<FirePage> {
+  Geolocator geolocator = Geolocator();
+
+  Position userLocation;
   @override
   initState() {
     super.initState();
   }
-
+ 
   String service; //service selected in the drop down
   String report;  //what type of report is selected
 
   @override
   Widget build(BuildContext context) {
 
+
+    final myControllerName = TextEditingController();
+    final myControllerNumber = TextEditingController();
+    final myControllerAdditionalInformation = TextEditingController();
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -56,7 +68,8 @@ class _FirePageWidgetState extends State<FirePage> {
                   setState(() {});
                 },
                 value: service,
-               ),
+              ),
+
               Text(
                 "Please Select What Services are Required",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
@@ -74,12 +87,15 @@ class _FirePageWidgetState extends State<FirePage> {
                   setState(() {});
                 },
                 value: report,
-              ),
+              ), //DropdownButton
+
+
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               TextFormField(
+                controller: myControllerName,
                 textAlign: TextAlign.left,
                 autocorrect: false,
                 showCursor: true,
@@ -102,6 +118,7 @@ class _FirePageWidgetState extends State<FirePage> {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               TextFormField(
+                controller: myControllerNumber,
                 textAlign: TextAlign.left,
                 autocorrect: false,
                 showCursor: true,
@@ -125,6 +142,7 @@ class _FirePageWidgetState extends State<FirePage> {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               TextFormField(
+                controller: myControllerAdditionalInformation,
                 textAlign: TextAlign.left,
                 autocorrect: true,
                 showCursor: true,
@@ -143,9 +161,64 @@ class _FirePageWidgetState extends State<FirePage> {
                 ],
               ),
               Center(
+
                 child: RaisedButton(
+
                   child: Text('Submit'),
+
                   onPressed: () {
+
+                    _getLocation().then((value) {
+                      setState(() {
+                        userLocation = value;
+
+                      });
+                    });
+
+
+                    String encodeName;
+                    String encodeNumber;
+                    String encodedAdditional;
+                    String encodedService;
+                    String encodedReport;
+                    String encodedLocation;
+
+                    encodedService =  service;
+                    encodedReport = report;
+                    encodeName = myControllerName.text;
+                    encodeNumber = myControllerNumber.text;
+                    encodedAdditional = myControllerAdditionalInformation.text;
+                    encodedLocation = userLocation.toString();
+
+                    var values = {
+                      'location' : encodedLocation,
+                      'Service' : "Fire," + encodedService,
+                      'Report' : encodedReport,
+                      'name': encodeName,
+                      'phone': encodeNumber,
+                      'message':  encodedAdditional
+                    };
+
+                    final string = json.encode(values);
+
+
+
+                    //TODO Add Submission results later
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+
+                        return AlertDialog(
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+
+
+                          content:
+                          Text(string),
+                        );
+
+                      },
+                    );
                     // Add Submission results later
                   },
                 ),
@@ -157,3 +230,15 @@ class _FirePageWidgetState extends State<FirePage> {
     );
   }
 }
+
+Future<Position> _getLocation() async {
+  var currentLocation;
+  try {
+    currentLocation = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  } catch (e) {
+    currentLocation = null;
+  }
+  return currentLocation;
+}
+

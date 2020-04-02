@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 class PolicePage extends StatefulWidget {
   @override
   _PolicePageWidgetState createState() => _PolicePageWidgetState();
 }
 
 class _PolicePageWidgetState extends State<PolicePage> {
+  Geolocator geolocator = Geolocator();
+
+  Position userLocation;
   @override
   initState() {
     super.initState();
   }
-
   String service; //service selected in the drop down
   String report;  //what type of report is selected
 
+
   @override
   Widget build(BuildContext context) {
+    final myControllerDrop = TextEditingController();
+    final myControllerName = TextEditingController();
+    final myControllerNumber = TextEditingController();
+    final myControllerAdditionalInformation = TextEditingController();
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -42,24 +50,36 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               DropdownButton<String>(
-                hint: Text('Please Choose One'),
+
+
+                  hint: Text('Please Choose One'),
                 items: <String>['None','Fire', 'Medical', 'Figure out more and change previous'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
+
                     child: new Text(value),
                   );
                 }).toList(),
                 onChanged: (String changed) {
                   report = changed;
-                  setState(() {});
+
+                  setState(() {
+                  });
+
+
                 },
                 value: report,
-              ),
+              ), //DropdownButton
+
               Text(
-                "Please Select Type of Report",
+
+                "Please Select What Services are Required",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+
               ),
+
               DropdownButton<String>(
+
                 hint: Text('No report type is selected'),
                 items: <String>['Fire', 'Medical'].map((String value) {
                   return new DropdownMenuItem<String>(
@@ -67,17 +87,22 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     child: new Text(value),
                   );
                 }).toList(),
+
                 onChanged: (String changed) {
                   service = changed;
                   setState(() {});
                 },
+
                 value: service,
-              ),
+
+              ), //DropdownButton
+
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               TextFormField(
+                controller: myControllerName,
                 textAlign: TextAlign.left,
                 autocorrect: false,
                 showCursor: true,
@@ -100,6 +125,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               TextFormField(
+                controller: myControllerNumber,
                 textAlign: TextAlign.left,
                 autocorrect: false,
                 showCursor: true,
@@ -123,6 +149,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               TextFormField(
+                controller: myControllerAdditionalInformation,
                 textAlign: TextAlign.left,
                 autocorrect: true,
                 showCursor: true,
@@ -144,7 +171,58 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 child: RaisedButton(
                   child: Text('Submit'),
                   onPressed: () {
-                    // Add Submission results later
+
+                    _getLocation().then((value) {
+                      setState(() {
+                        userLocation = value;
+
+                      });
+                    });
+
+
+                    String encodeName;
+                    String encodeNumber;
+                    String encodedAdditional;
+                    String encodedService;
+                    String encodedReport;
+                    String encodedLocation;
+
+                    encodedService =  service;
+                    encodedReport = report;
+                    encodeName = myControllerName.text;
+                    encodeNumber = myControllerNumber.text;
+                    encodedAdditional = myControllerAdditionalInformation.text;
+                    encodedLocation = userLocation.toString();
+
+                    var values = {
+                      'location' : encodedLocation,
+                      'Service' : encodedService,
+                      'Report' : encodedReport,
+                      'name': encodeName,
+                      'phone': encodeNumber,
+                      'message':  encodedAdditional
+                    };
+
+                    final string = json.encode(values);
+
+
+                    //TODO Add Submission results later
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+
+                        return AlertDialog(
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+
+
+                          content:
+                          Text(string),
+                        );
+
+                      },
+                    );
+                    //TODO Add Submission results later
                   },
                 ),
               ),
@@ -154,4 +232,15 @@ class _PolicePageWidgetState extends State<PolicePage> {
       ),
     );
   }
+}
+
+Future<Position> _getLocation() async {
+  var currentLocation;
+  try {
+    currentLocation = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  } catch (e) {
+    currentLocation = null;
+  }
+  return currentLocation;
 }

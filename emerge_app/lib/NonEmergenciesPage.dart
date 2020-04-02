@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:convert';
+import 'package:geolocator/geolocator.dart';
 
 class NonEmergenciesPage extends StatefulWidget {
   @override
   _NonEmergenciesPageWidgetState createState() => _NonEmergenciesPageWidgetState();
 }
+String service; //service selected in the drop down
+String report;  //what type of report is selected
+
 
 class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
+  Geolocator geolocator = Geolocator();
+
+  Position userLocation;
   @override
   initState() {
     super.initState();
   }
 
-  String service; //service selected in the drop down
-  String report;  //what type of report is selected
-
   @override
   Widget build(BuildContext context) {
+    final myControllerName = TextEditingController();
+    final myControllerNumber = TextEditingController();
+    final myControllerAdditionalInformation = TextEditingController();
     return MaterialApp(
         home: Scaffold(
           //blue header
@@ -46,10 +54,10 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
-                DropdownButton<String>(
+                DropdownButton<String>(   //Service drop down
+
                   hint: Text('Please Choose One'),
-                  items: <String>['None','Fire', 'Police', 'Medical', 'Fire and Police',
-                  'Fire and Medical', 'Police and Medical'].map((String value) {
+                  items: <String>['None','Medical', 'Police'].map((String value) {
                     return new DropdownMenuItem<String>(
                       value: value,
                       child: new Text(value),
@@ -66,6 +74,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
                 TextFormField(
+                  controller: myControllerName,
                   textAlign: TextAlign.left,
                   autocorrect: false,
                   showCursor: true,
@@ -88,6 +97,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
                 TextFormField(
+                  controller: myControllerNumber,
                   textAlign: TextAlign.left,
                   autocorrect: false,
                   showCursor: true,
@@ -111,6 +121,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
                 ),
                 TextFormField(
+                  controller: myControllerAdditionalInformation,
                   textAlign: TextAlign.left,
                   autocorrect: true,
                   showCursor: true,
@@ -121,7 +132,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                     paste: false,
                   ),
                   decoration: new InputDecoration.collapsed(
-                      hintText: "Enter any other information"),
+                      hintText: "Enter any other information Enter any other information"),
                   inputFormatters: <TextInputFormatter>[
                     LengthLimitingTextInputFormatter(256),
                     WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters and periods
@@ -132,7 +143,60 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   child: RaisedButton(
                     child: Text('Submit'),
                     onPressed: () {
-                      // Add Submission results later
+                      _getLocation().then((value) {
+                        setState(() {
+                          userLocation = value;
+
+                        });
+                      });
+
+
+                      String encodeName;
+                      String encodeNumber;
+                      String encodedAdditional;
+                      String encodedService;
+                      String encodedReport;
+                      String encodedLocation;
+
+                      encodedService =  service;
+                      encodedReport = report;
+
+
+                      encodeName = myControllerName.text;
+                      encodeNumber = myControllerNumber.text;
+                      encodedAdditional = myControllerAdditionalInformation.text;
+                      encodedLocation = userLocation.toString();
+
+                      var values = {
+                        'location' : encodedLocation,
+                        'Service' : encodedService,
+                        'Report' : encodedReport,
+                        'name': encodeName,
+                        'phone': encodeNumber,
+                        'message':  encodedAdditional
+                      };
+
+                      final string = json.encode(values);
+
+
+                      //TODO Add Submission results later
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+
+
+                            content:
+                            Text(string),
+                          );
+
+                        },
+                      );
+
+
                     },
                   ),
                 ),
@@ -141,4 +205,14 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
           ),
         ));
   }
+}
+Future<Position> _getLocation() async {
+  var currentLocation;
+  try {
+    currentLocation = await Geolocator().getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+  } catch (e) {
+    currentLocation = null;
+  }
+  return currentLocation;
 }
