@@ -14,19 +14,56 @@ const Tab = ({ children }) => {
   )
 }
 
-const HomePage = () => (
+class HomePage extends React.Component {
+    state = {
+        loading: true
+    };
+
+    async componentDidMount() {
+        
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    
+    const raw = JSON.stringify(
+    {
+        "report_id":1
+    });
+    
+    const requestOptions = {
+      method: 'POST',
+      headers: myHeaders,
+      body: raw,
+      redirect: 'follow'
+    };
+    
+    await fetch("http://18.212.156.43:80/get_report", requestOptions)
+      .then(response => response.text())
+      .then(result => console.log(result))
+      .catch(error => console.log('error', error));
+     }
+
+     async componentDidUpdate() {
+      
+        const url= "18.212.156.43:80/get_report";
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+     }
+
+    render(){
+    return(
     <div className='homepage'>
         <Tabs>
-            <div class="tabs">
-                <div class="tab-list">
+            <div className="tabs">
+                <div className="tab-list">
                     <Tab>Incoming</Tab>
                     <Tab>Acknowledged</Tab>
                     <Tab>Solved</Tab>
                 </div>
-                <div class="tab-progress"></div>
+                <div className="tab-progress"></div>
                 <Panel>
-                    <div class="container row">
-                        <div class="information-container">
+                    <div className="container row">
+                        <div className="information-container">
                         <p>
                         Description: A man has fallin into a river in the city...
                         </p>
@@ -37,12 +74,12 @@ const HomePage = () => (
                         Location: 1234 Fake Street, Glassboro, NJ 08028
                         </p>
                         </div>
-                        <div class="button-container">
-                        <button class="acknowledge-button">Acknowledge</button>
+                        <div className="button-container">
+                        <button className="acknowledge-button">Acknowledge</button>
                         </div>
                     </div>
-                    <div class="container row">
-                        <div class="information-container">
+                    <div className="container row">
+                        <div className="information-container">
                         <p>
                         Description: There is a fire at Wawa...
                         </p>
@@ -53,8 +90,8 @@ const HomePage = () => (
                         Location: 352 Wawa Drive, Glassboro, NJ 08028
                         </p>
                         </div>
-                        <div class="button-container">
-                        <button class="acknowledge-button">Acknowledge</button>
+                        <div className="button-container">
+                        <button className="acknowledge-button">Acknowledge</button>
                         </div>
                     </div>
                 </Panel>
@@ -73,6 +110,8 @@ const HomePage = () => (
             </div>
         </Tabs>
     </div>
-)
+    )
+    }
+}
 
 export default HomePage;

@@ -8,6 +8,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "bootstrap": "^4.4.1",
+    "cors": "^2.8.5",
     "firebase": "^7.9.3",
     "node-sass": "^4.13.1",
     "react": "^16.12.0",
@@ -28,6 +29,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "proxy": "http://13.58.100.188:80/emerge",
   "eslintConfig": {
     "extends": "react-app"
   },
