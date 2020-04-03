@@ -128,7 +128,7 @@ def add_report():
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON all fields from report row
 @app.route('/get_report', methods=['POST', 'OPTIONS'])
-#@cross_origin()
+@cross_origin()
 def get_report():
 
      #get input JSON
