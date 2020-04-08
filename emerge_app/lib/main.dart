@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'FirePage.dart';
 import 'MedicalPage.dart';
 import 'NonEmergenciesPage.dart';
 import 'PolicePage.dart';
-import 'FirePage.dart';
 import 'TipsPage.dart';
 
 void main() {
@@ -30,6 +31,7 @@ class MyApp extends StatelessWidget {
 }
 
 class StartScreen extends StatelessWidget {
+  String text = "text";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,7 +46,7 @@ class StartScreen extends StatelessWidget {
                 child: Text('Medical'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/MedicalPage');
+                  _navigateToMedicalPage(context);
                 },
               ),
             ),
@@ -53,7 +55,8 @@ class StartScreen extends StatelessWidget {
                 child: Text('Police'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/PolicePage');
+                  //Navigator.pushNamed(context, '/PolicePage');
+                  _navigateToPolicePage(context);
                 },
               ),
             ),
@@ -62,7 +65,8 @@ class StartScreen extends StatelessWidget {
                 child: Text('Fire'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/FirePage');
+                  //Navigator.pushNamed(context, '/FirePage');
+                  _navigateToFirePage(context);
                 },
               ),
             ),
@@ -71,7 +75,8 @@ class StartScreen extends StatelessWidget {
                 child: Text('Tips'),
                 onPressed: () {
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/TipsPage');
+                  //Navigator.pushNamed(context, '/TipsPage');
+                  _navigateToTipsPage(context);
                 },
               ),
             ),
@@ -81,7 +86,8 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   //TODO add a non-emergencies page and copy all of the code over
                   // Navigate to the second screen using a named route
-                  Navigator.pushNamed(context, '/NonEmergenciesPage');
+                  //Navigator.pushNamed(context, '/NonEmergenciesPage');
+                  _navigateToNonEmergenciesPage(context);
                 },
               ),
             ),
@@ -103,5 +109,30 @@ class StartScreen extends StatelessWidget {
             ),
           ],
         ));
+  }
+
+  void _navigateToMedicalPage(BuildContext context) async {
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.pushNamed(context, '/MedicalPage');
+  }
+
+  void _navigateToFirePage(BuildContext context) async {
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.pushNamed(context, '/FirePage');
+  }
+
+  void _navigateToNonEmergenciesPage(BuildContext context) async {
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.pushNamed(context, '/NonEmergenciesPage');
+  }
+
+  void _navigateToPolicePage(BuildContext context) async {
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.pushNamed(context, '/PolicePage');
+  }
+
+  void _navigateToTipsPage(BuildContext context) async {
+    // start the SecondScreen and wait for it to finish with a result
+    final result = await Navigator.pushNamed(context, '/TipsPage');
   }
 }

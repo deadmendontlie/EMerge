@@ -52,7 +52,8 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     hintText: "Please enter your name"),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
-                  WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\s]')), //This will allow for letters only
+                  WhitelistingTextInputFormatter(new RegExp(
+                      '[A-Za-z\\s]')), //This will allow for letters only
                   //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
                 ],
               ),
@@ -97,7 +98,8 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     hintText: "Tip Information (256 max)"),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
-                  WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters and periods
+                  WhitelistingTextInputFormatter(new RegExp(
+                      '[A-Za-z\\.\\s]')), //This will allow for letters and periods
                   //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
                 ],
               ),

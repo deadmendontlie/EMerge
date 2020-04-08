@@ -1,10 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'dart:convert';
-import 'dart:async';
 import 'package:geolocator/geolocator.dart';
-import 'package:android_intent/android_intent.dart';
-import 'package:location/location.dart';
 
 class FirePage extends StatefulWidget {
   @override
@@ -13,20 +12,16 @@ class FirePage extends StatefulWidget {
 
 class _FirePageWidgetState extends State<FirePage> {
   Geolocator geolocator = Geolocator();
-
   Position userLocation;
   @override
   initState() {
     super.initState();
   }
- 
-  String service; //service selected in the drop down
-  String report;  //what type of report is selected
 
+  String service; //service selected in the drop down
+  String report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
-
-
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -54,10 +49,11 @@ class _FirePageWidgetState extends State<FirePage> {
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
-              DropdownButton<String>(   //Service drop down
-
+              DropdownButton<String>(
+                //Service drop down
                 hint: Text('Please Choose One'),
-                items: <String>['None','Medical', 'Police'].map((String value) {
+                items:
+                    <String>['None', 'Medical', 'Police'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
@@ -69,14 +65,15 @@ class _FirePageWidgetState extends State<FirePage> {
                 },
                 value: service,
               ),
-
               Text(
                 "Please Select What Services are Required",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
-              DropdownButton<String>(   //report drop down
+              DropdownButton<String>(
+                //report drop down
                 hint: Text('No report type is selected'),
-                items: <String>['Fire', 'Gas Leak', 'Figure out more'].map((String value) {
+                items: <String>['Fire', 'Gas Leak', 'Figure out more']
+                    .map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
@@ -88,8 +85,6 @@ class _FirePageWidgetState extends State<FirePage> {
                 },
                 value: report,
               ), //DropdownButton
-
-
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
@@ -109,7 +104,8 @@ class _FirePageWidgetState extends State<FirePage> {
                     hintText: "Please enter your name"),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
-                  WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\s]')), //This will allow for letters and periods
+                  WhitelistingTextInputFormatter(new RegExp(
+                      '[A-Za-z\\s]')), //This will allow for letters and periods
                   //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
                 ],
               ),
@@ -156,67 +152,50 @@ class _FirePageWidgetState extends State<FirePage> {
                     hintText: "Enter any other information (256 max)"),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
-                  WhitelistingTextInputFormatter(new RegExp('[A-Za-z\\.\\s]')), //This will allow for letters and periods
+                  WhitelistingTextInputFormatter(new RegExp(
+                      '[A-Za-z\\.\\s]')), //This will allow for letters and periods
                   //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
                 ],
               ),
               Center(
-
                 child: RaisedButton(
-
                   child: Text('Submit'),
-
                   onPressed: () {
-
                     _getLocation().then((value) {
                       setState(() {
                         userLocation = value;
-
                       });
                     });
-
-
                     String encodeName;
                     String encodeNumber;
                     String encodedAdditional;
                     String encodedService;
                     String encodedReport;
                     String encodedLocation;
-
-                    encodedService =  service;
+                    encodedService = service;
                     encodedReport = report;
                     encodeName = myControllerName.text;
                     encodeNumber = myControllerNumber.text;
                     encodedAdditional = myControllerAdditionalInformation.text;
                     encodedLocation = userLocation.toString();
-
                     var values = {
-                      'location' : encodedLocation,
-                      'Service' : "Fire," + encodedService,
-                      'Report' : encodedReport,
+                      'location': encodedLocation,
+                      'Service': "Fire," + encodedService,
+                      'Report': encodedReport,
                       'name': encodeName,
                       'phone': encodeNumber,
-                      'message':  encodedAdditional
+                      'message': encodedAdditional
                     };
-
                     final string = json.encode(values);
-
-
-
                     //TODO Add Submission results later
                     return showDialog(
                       context: context,
                       builder: (context) {
-
                         return AlertDialog(
                           // Retrieve the text the user has entered by using the
                           // TextEditingController.
-
-
-                          content:
-                          Text(string),
+                          content: Text(string),
                         );
-
                       },
                     );
                     // Add Submission results later
@@ -234,11 +213,10 @@ class _FirePageWidgetState extends State<FirePage> {
 Future<Position> _getLocation() async {
   var currentLocation;
   try {
-    currentLocation = await Geolocator().getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
+    currentLocation = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
   } catch (e) {
     currentLocation = null;
   }
   return currentLocation;
 }
-
