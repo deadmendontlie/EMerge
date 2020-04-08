@@ -33,7 +33,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
             icon: Icon(Icons.arrow_back_ios),
             tooltip: 'Back',
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context, 2);
             },
           ),
         ),

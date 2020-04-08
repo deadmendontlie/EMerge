@@ -35,7 +35,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
           icon: Icon(Icons.arrow_back_ios),
           tooltip: 'Back',
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, 5);
           },
         ),
       ),

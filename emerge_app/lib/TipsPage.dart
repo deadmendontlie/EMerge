@@ -22,7 +22,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
             icon: Icon(Icons.arrow_back_ios),
             tooltip: 'Back',
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context, 4);
             },
           ),
         ),

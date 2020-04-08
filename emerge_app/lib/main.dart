@@ -31,7 +31,8 @@ class MyApp extends StatelessWidget {
 }
 
 class StartScreen extends StatelessWidget {
-  String text = "text";
+  int reportID = -1;
+  bool reported = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,8 +46,13 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Medical'),
                 onPressed: () {
-                  // Navigate to the second screen using a named route
-                  _navigateToMedicalPage(context);
+                  //Returns a value currently when the function ends
+                  //TODO Have it setup so the values are not hardcoded
+                  //TODO Also have it return back when the submit button is hit
+                  _navigateToMedicalPage(context).then((newReportID) {
+                    reportID = newReportID;
+                    print(reportID);
+                  });
                 },
               ),
             ),
@@ -54,9 +60,11 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Police'),
                 onPressed: () {
-                  // Navigate to the second screen using a named route
-                  //Navigator.pushNamed(context, '/PolicePage');
-                  _navigateToPolicePage(context);
+                  //Returns a value currently when the function ends
+                  _navigateToPolicePage(context).then((newReportID) {
+                    reportID = newReportID;
+                    print(reportID);
+                  });
                 },
               ),
             ),
@@ -64,9 +72,11 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Fire'),
                 onPressed: () {
-                  // Navigate to the second screen using a named route
-                  //Navigator.pushNamed(context, '/FirePage');
-                  _navigateToFirePage(context);
+                  //Returns a value currently when the function ends
+                  _navigateToFirePage(context).then((newReportID) {
+                    reportID = newReportID;
+                    print(reportID);
+                  });
                 },
               ),
             ),
@@ -74,9 +84,11 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Tips'),
                 onPressed: () {
-                  // Navigate to the second screen using a named route
-                  //Navigator.pushNamed(context, '/TipsPage');
-                  _navigateToTipsPage(context);
+                  //Returns a value currently when the function ends
+                  _navigateToTipsPage(context).then((newReportID) {
+                    reportID = newReportID;
+                    print(reportID);
+                  });
                 },
               ),
             ),
@@ -84,10 +96,12 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Non-Emergencies'),
                 onPressed: () {
+                  //Returns a value currently when the function ends
                   //TODO add a non-emergencies page and copy all of the code over
-                  // Navigate to the second screen using a named route
-                  //Navigator.pushNamed(context, '/NonEmergenciesPage');
-                  _navigateToNonEmergenciesPage(context);
+                  _navigateToNonEmergenciesPage(context).then((newReportID) {
+                    reportID = newReportID;
+                    print(reportID);
+                  });
                 },
               ),
             ),
@@ -111,28 +125,23 @@ class StartScreen extends StatelessWidget {
         ));
   }
 
-  void _navigateToMedicalPage(BuildContext context) async {
-    // start the SecondScreen and wait for it to finish with a result
-    final result = await Navigator.pushNamed(context, '/MedicalPage');
+  Future<int> _navigateToMedicalPage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/MedicalPage') as int;
   }
 
-  void _navigateToFirePage(BuildContext context) async {
-    // start the SecondScreen and wait for it to finish with a result
-    final result = await Navigator.pushNamed(context, '/FirePage');
+  Future<int> _navigateToFirePage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/FirePage') as int;
   }
 
-  void _navigateToNonEmergenciesPage(BuildContext context) async {
-    // start the SecondScreen and wait for it to finish with a result
-    final result = await Navigator.pushNamed(context, '/NonEmergenciesPage');
+  Future<int> _navigateToNonEmergenciesPage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/NonEmergenciesPage') as int;
   }
 
-  void _navigateToPolicePage(BuildContext context) async {
-    // start the SecondScreen and wait for it to finish with a result
-    final result = await Navigator.pushNamed(context, '/PolicePage');
+  Future<int> _navigateToPolicePage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/PolicePage') as int;
   }
 
-  void _navigateToTipsPage(BuildContext context) async {
-    // start the SecondScreen and wait for it to finish with a result
-    final result = await Navigator.pushNamed(context, '/TipsPage');
+  Future<int> _navigateToTipsPage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/TipsPage') as int;
   }
 }

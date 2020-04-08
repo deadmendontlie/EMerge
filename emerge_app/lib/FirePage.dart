@@ -33,7 +33,7 @@ class _FirePageWidgetState extends State<FirePage> {
             icon: Icon(Icons.arrow_back_ios),
             tooltip: 'Back',
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(context, 3);
             },
           ),
         ),

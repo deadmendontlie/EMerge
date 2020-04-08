@@ -17,6 +17,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
     super.initState();
   }
 
+  int reportID;
   String service; //service selected in the drop down
   String report; //what type of report is selected
   @override
@@ -33,7 +34,8 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
           icon: Icon(Icons.arrow_back_ios),
           tooltip: 'Back',
           onPressed: () {
-            Navigator.pop(context);
+            //Navigator.pop(context);
+            Navigator.pop(context, 1);
           },
         ),
       ),
