@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import 'FirePage.dart';
 import 'MedicalPage.dart';
@@ -31,8 +34,9 @@ class MyApp extends StatelessWidget {
 }
 
 class StartScreen extends StatelessWidget {
-  int reportID = -1;
-  bool reported = false;
+  int _reportID = -1;
+  bool _reported = false;
+  String _currentReportStatus;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,8 +54,11 @@ class StartScreen extends StatelessWidget {
                   //TODO Have it setup so the values are not hardcoded
                   //TODO Also have it return back when the submit button is hit
                   _navigateToMedicalPage(context).then((newReportID) {
-                    reportID = newReportID;
-                    print(reportID);
+                    _reportID = newReportID;
+                    print(_reportID);
+                    if (_reportID != 1) {
+                      _reported = true;
+                    }
                   });
                 },
               ),
@@ -62,8 +69,11 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   //Returns a value currently when the function ends
                   _navigateToPolicePage(context).then((newReportID) {
-                    reportID = newReportID;
-                    print(reportID);
+                    _reportID = newReportID;
+                    print(_reportID);
+                    if (_reportID != 1) {
+                      _reported = true;
+                    }
                   });
                 },
               ),
@@ -74,8 +84,11 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   //Returns a value currently when the function ends
                   _navigateToFirePage(context).then((newReportID) {
-                    reportID = newReportID;
-                    print(reportID);
+                    _reportID = newReportID;
+                    print(_reportID);
+                    if (_reportID != 1) {
+                      _reported = true;
+                    }
                   });
                 },
               ),
@@ -86,8 +99,11 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   //Returns a value currently when the function ends
                   _navigateToTipsPage(context).then((newReportID) {
-                    reportID = newReportID;
-                    print(reportID);
+                    _reportID = newReportID;
+                    print(_reportID);
+                    if (_reportID != 1) {
+                      _reported = true;
+                    }
                   });
                 },
               ),
@@ -99,8 +115,11 @@ class StartScreen extends StatelessWidget {
                   //Returns a value currently when the function ends
                   //TODO add a non-emergencies page and copy all of the code over
                   _navigateToNonEmergenciesPage(context).then((newReportID) {
-                    reportID = newReportID;
-                    print(reportID);
+                    _reportID = newReportID;
+                    print(_reportID);
+                    if (_reportID != 1) {
+                      _reported = true;
+                    }
                   });
                 },
               ),
@@ -118,6 +137,10 @@ class StartScreen extends StatelessWidget {
                 child: Text('Report Status'),
                 onPressed: () {
                   //TODO add code to check report statues and have it come up with a pop up
+                  _fetchStatus().then((reportStatus) {
+                    _currentReportStatus = reportStatus;
+                    print(_currentReportStatus);
+                  });
                 },
               ),
             ),
@@ -143,5 +166,27 @@ class StartScreen extends StatelessWidget {
 
   Future<int> _navigateToTipsPage(BuildContext context) async {
     return await Navigator.pushNamed(context, '/TipsPage') as int;
+  }
+}
+
+class Status {
+  final String status;
+  Status({this.status});
+  factory Status.fromJson(Map<String, dynamic> json) {
+    return Status(
+      status: json['status'],
+    );
+  }
+  String get getStatus {
+    return status;
+  }
+}
+
+Future<String> _fetchStatus() async {
+  final response = await http.get('https://');
+  if (response.statusCode == 200) {
+    return Status.fromJson(json.decode(response.body)).getStatus;
+  } else {
+    throw Exception('Currently no active reports');
   }
 }
