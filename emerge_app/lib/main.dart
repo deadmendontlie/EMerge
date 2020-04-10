@@ -174,7 +174,7 @@ class Status {
   Status({this.status});
   factory Status.fromJson(Map<String, dynamic> json) {
     return Status(
-      status: json['status'],
+      status: json['test'],
     );
   }
   String get getStatus {
@@ -183,7 +183,8 @@ class Status {
 }
 
 Future<String> _fetchStatus() async {
-  final response = await http.get('https://');
+  //Make this a post right now
+  final response = await http.get('http://18.212.156.43:80/test');
   if (response.statusCode == 200) {
     return Status.fromJson(json.decode(response.body)).getStatus;
   } else {

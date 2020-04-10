@@ -49,6 +49,8 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
             //TODO Add other things need for the text boxes and drop downs
             //TODO Make the submit button work
             //TODO add a verification pop up before they submit the report
+            //TODO Add the urgency, Timestamp, and photo to the json
+            //TODO Also set default values for everything
             Text(
               "Please Select What Services are Required as well(Defaults to Just Medical)",
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
