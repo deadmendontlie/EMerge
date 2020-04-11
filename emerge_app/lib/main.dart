@@ -56,7 +56,7 @@ class StartScreen extends StatelessWidget {
                   _navigateToMedicalPage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
-                    if (_reportID != 1) {
+                    if (_reportID != -1) {
                       _reported = true;
                     }
                   });
@@ -71,7 +71,7 @@ class StartScreen extends StatelessWidget {
                   _navigateToPolicePage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
-                    if (_reportID != 1) {
+                    if (_reportID != -1) {
                       _reported = true;
                     }
                   });
@@ -86,7 +86,7 @@ class StartScreen extends StatelessWidget {
                   _navigateToFirePage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
-                    if (_reportID != 1) {
+                    if (_reportID != -1) {
                       _reported = true;
                     }
                   });
@@ -101,7 +101,7 @@ class StartScreen extends StatelessWidget {
                   _navigateToTipsPage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
-                    if (_reportID != 1) {
+                    if (_reportID != -1) {
                       _reported = true;
                     }
                   });
@@ -136,11 +136,54 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Report Status'),
                 onPressed: () {
-                  //TODO add code to check report statues and have it come up with a pop up
-                  _fetchStatus().then((reportStatus) {
-                    _currentReportStatus = reportStatus;
-                    print(_currentReportStatus);
-                  });
+                  if (_reportID != -1) {
+                    //TODO add code to check report statues and have it come up with a pop up
+                    _fetchStatus().then((reportStatus) {
+                      _currentReportStatus = reportStatus;
+                      print(_currentReportStatus);
+                      if (_currentReportStatus != 'Closed') {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              // Retrieve the text the user has entered by using the
+                              // TextEditingController.
+                              content: Text(
+                                  'Report Status is ' + _currentReportStatus),
+                            );
+                          },
+                        );
+                      } else {
+                        if (_reported == true) {
+                          _reported = false;
+                          _reportID = -1;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                // Retrieve the text the user has entered by using the
+                                // TextEditingController.
+                                content: Text(
+                                    'Your report was closed and or solved'),
+                              );
+                            },
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                // Retrieve the text the user has entered by using the
+                                // TextEditingController.
+                                content: Text(
+                                    'Your report was closed or you have no active reports'),
+                              );
+                            },
+                          );
+                        }
+                      }
+                    });
+                  }
                 },
               ),
             ),
@@ -170,6 +213,7 @@ class StartScreen extends StatelessWidget {
 }
 
 class Status {
+  //TODO Change the value of the json from test to whatever it needs to be to get status
   final String status;
   Status({this.status});
   factory Status.fromJson(Map<String, dynamic> json) {
@@ -183,7 +227,8 @@ class Status {
 }
 
 Future<String> _fetchStatus() async {
-  //Make this a post right now
+  //TODO change it from test to the proper end point and make it a post
+  //TODO Also test it with the new end point and values
   final response = await http.get('http://18.212.156.43:80/test');
   if (response.statusCode == 200) {
     return Status.fromJson(json.decode(response.body)).getStatus;
