@@ -51,8 +51,7 @@ class StartScreen extends StatelessWidget {
                 child: Text('Medical'),
                 onPressed: () {
                   //Returns a value currently when the function ends
-                  //TODO Have it setup so the values are not hardcoded
-                  //TODO Also have it return back when the submit button is hit
+                  //TODO Copy all of the submoitting reports code to here and other pages
                   _navigateToMedicalPage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
@@ -113,7 +112,6 @@ class StartScreen extends StatelessWidget {
                 child: Text('Non-Emergencies'),
                 onPressed: () {
                   //Returns a value currently when the function ends
-                  //TODO add a non-emergencies page and copy all of the code over
                   _navigateToNonEmergenciesPage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
@@ -136,8 +134,9 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Report Status'),
                 onPressed: () {
+                  print(_reportID);
                   if (_reportID != -1) {
-                    //TODO add code to check report statues and have it come up with a pop up
+                    //TODO Finish report status to actually get a report
                     _fetchStatus().then((reportStatus) {
                       _currentReportStatus = reportStatus;
                       print(_currentReportStatus);
@@ -227,7 +226,7 @@ class Status {
 }
 
 Future<String> _fetchStatus() async {
-  //TODO change it from test to the proper end point and make it a post
+  //TODO change it from test to the proper end point and make it a post or whatever
   //TODO Also test it with the new end point and values
   final response = await http.get('http://18.212.156.43:80/test');
   if (response.statusCode == 200) {

@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class MedicalPage extends StatefulWidget {
   @override
@@ -35,22 +37,15 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
           tooltip: 'Back',
           onPressed: () {
             //Navigator.pop(context);
-            Navigator.pop(context, 1);
+            Navigator.pop(context);
           },
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            //TODO change all of the textboxes and stuff for this page
-            //TODO Once this is all done and we have the http methods and stuff add them later and maybe have it make a json file on submit
-            //TODO Add the drop down menus and fill them with info
-            //TODO Make the text boxes nice and put extra info in them if needed
-            //TODO Add other things need for the text boxes and drop downs
-            //TODO Make the submit button work
+            //TODO Clean up all of the text and add all of the proper report types
             //TODO add a verification pop up before they submit the report
-            //TODO Add the urgency, Timestamp, and photo to the json
-            //TODO Also set default values for everything
             Text(
               "Please Select What Services are Required as well(Defaults to Just Medical)",
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
@@ -181,29 +176,64 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   String encodedService;
                   String encodedReport;
                   String encodedLocation;
-                  encodedService = service;
+                  String encodedDateTime;
+                  DateTime now = DateTime.now();
+                  encodedDateTime =
+                      DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
+                  if (service == 'None') {
+                    encodedService = "H";
+                  } else if (service == 'Fire') {
+                    encodedService = "FH";
+                  } else if (service == 'Police') {
+                    encodedService = "PH";
+                  } else if (service == 'Fire and Police') {
+                    encodedService = "FPH";
+                  }
+                  if (myControllerName.text.toString() != "" ||
+                      myControllerName.text.toString() != "\\+") {
+                    encodeName = myControllerName.text;
+                  } else {
+                    encodeName = 'Annonymous';
+                  }
+                  if (myControllerNumber.text.toString() != "") {
+                    encodeNumber = myControllerNumber.text;
+                  } else {
+                    encodeNumber = 'N/A';
+                  }
+                  if (myControllerAdditionalInformation.text.toString() != "") {
+                    encodedAdditional = myControllerAdditionalInformation.text;
+                  } else {
+                    encodedAdditional = 'N/A';
+                  }
                   encodedReport = report;
-                  encodeName = myControllerName.text;
-                  encodeNumber = myControllerNumber.text;
-                  encodedAdditional = myControllerAdditionalInformation.text;
                   encodedLocation = userLocation.toString();
                   var values = {
-                    'location': encodedLocation,
-                    'Service': "Medical," + encodedService,
-                    'Report': encodedReport,
-                    'name': encodeName,
-                    'phone': encodeNumber,
-                    'message': encodedAdditional
+                    "timestamp": encodedDateTime,
+                    "required_responders": encodedService,
+                    "status": "New",
+                    "urgency": "High",
+                    "GPS": encodedLocation,
+                    "name": encodeName,
+                    "phone": encodeNumber,
+                    "photo": "Null",
+                    "message": encodedAdditional,
+                    "report_level": "Emergency",
+                    "report_type": encodedReport
                   };
-                  final string = json.encode(values);
-                  //TODO Add Submission results later
+                  final Json = json.encode(values);
+                  _postReport(Json).then((reportIDValue) {
+                    reportID = reportIDValue;
+                    print(reportID);
+                    Navigator.pop(context, reportID);
+                  });
+                  //TODO Remove the dialog when this is done
                   return showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
                         // Retrieve the text the user has entered by using the
                         // TextEditingController.
-                        content: Text(string),
+                        content: Text(Json),
                       );
                     },
                   );
@@ -226,4 +256,32 @@ Future<Position> _getLocation() async {
     currentLocation = null;
   }
   return currentLocation;
+}
+
+class ReportID {
+  final int reportID;
+  ReportID({this.reportID});
+  factory ReportID.fromJson(Map<String, dynamic> json) {
+    return ReportID(
+      reportID: json['report_id'],
+    );
+  }
+  int get getReportID {
+    return reportID;
+  }
+}
+
+Future<int> _postReport(Object jsonData) async {
+  final response = await http.put('http://18.212.156.43:80/add_report',
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+      body: jsonData);
+  if (response.statusCode == 200) {
+    return ReportID.fromJson(json.decode(response.body)).getReportID;
+  } else {
+    print(response.statusCode);
+    throw Exception('Report was not submitted');
+  }
 }
