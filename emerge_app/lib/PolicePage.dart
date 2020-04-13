@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class PolicePage extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
     super.initState();
   }
 
+  int reportID;
   String service; //service selected in the drop down
   String report; //what type of report is selected
   @override
@@ -33,7 +36,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
             icon: Icon(Icons.arrow_back_ios),
             tooltip: 'Back',
             onPressed: () {
-              Navigator.pop(context, 2);
+              Navigator.pop(context);
             },
           ),
         ),
@@ -55,7 +58,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                   'None',
                   'Fire',
                   'Medical',
-                  'Figure out more and change previous'
+                  'Medical and Fire'
                 ].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
@@ -174,21 +177,58 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     String encodedService;
                     String encodedReport;
                     String encodedLocation;
-                    encodedService = service;
+                    String encodedDateTime;
+                    DateTime now = DateTime.now();
+                    encodedDateTime =
+                        DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
+                    if (service == 'None') {
+                      encodedService = "P";
+                    } else if (service == 'Medical') {
+                      encodedService = "PH";
+                    } else if (service == 'Fire') {
+                      encodedService = "FP";
+                    } else if (service == 'Medical and Fire') {
+                      encodedService = "FPH";
+                    }
+                    if (myControllerName.text.toString() != "" ||
+                        myControllerName.text.toString() != "\\+") {
+                      encodeName = myControllerName.text;
+                    } else {
+                      encodeName = 'Annonymous';
+                    }
+                    if (myControllerNumber.text.toString() != "") {
+                      encodeNumber = myControllerNumber.text;
+                    } else {
+                      encodeNumber = 'N/A';
+                    }
+                    if (myControllerAdditionalInformation.text.toString() !=
+                        "") {
+                      encodedAdditional =
+                          myControllerAdditionalInformation.text;
+                    } else {
+                      encodedAdditional = 'N/A';
+                    }
                     encodedReport = report;
-                    encodeName = myControllerName.text;
-                    encodeNumber = myControllerNumber.text;
-                    encodedAdditional = myControllerAdditionalInformation.text;
                     encodedLocation = userLocation.toString();
                     var values = {
-                      'location': encodedLocation,
-                      'Service': encodedService,
-                      'Report': encodedReport,
-                      'name': encodeName,
-                      'phone': encodeNumber,
-                      'message': encodedAdditional
+                      "timestamp": encodedDateTime,
+                      "required_responders": encodedService,
+                      "status": "New",
+                      "urgency": "High",
+                      "GPS": encodedLocation,
+                      "name": encodeName,
+                      "phone": encodeNumber,
+                      "photo": "Null",
+                      "message": encodedAdditional,
+                      "report_level": "Emergency",
+                      "report_type": encodedReport
                     };
-                    final string = json.encode(values);
+                    final Json = json.encode(values);
+                    _postReport(Json).then((reportIDValue) {
+                      reportID = reportIDValue;
+                      print(reportID);
+                      Navigator.pop(context, reportID);
+                    });
                     //TODO Add Submission results later
                     return showDialog(
                       context: context,
@@ -196,7 +236,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                         return AlertDialog(
                           // Retrieve the text the user has entered by using the
                           // TextEditingController.
-                          content: Text(string),
+                          content: Text(Json),
                         );
                       },
                     );
@@ -221,4 +261,32 @@ Future<Position> _getLocation() async {
     currentLocation = null;
   }
   return currentLocation;
+}
+
+class ReportID {
+  final int reportID;
+  ReportID({this.reportID});
+  factory ReportID.fromJson(Map<String, dynamic> json) {
+    return ReportID(
+      reportID: json['report_id'],
+    );
+  }
+  int get getReportID {
+    return reportID;
+  }
+}
+
+Future<int> _postReport(Object jsonData) async {
+  final response = await http.put('http://18.212.156.43:80/add_report',
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+      body: jsonData);
+  if (response.statusCode == 200) {
+    return ReportID.fromJson(json.decode(response.body)).getReportID;
+  } else {
+    print(response.statusCode);
+    throw Exception('Report was not submitted');
+  }
 }
