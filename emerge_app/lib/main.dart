@@ -39,6 +39,7 @@ class StartScreen extends StatelessWidget {
   int _reportID = -1;
   bool _reported = false;
   String _currentReportStatus;
+  bool _emergencyReport = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +134,7 @@ class StartScreen extends StatelessWidget {
                     _reportID = onValue;
                     if (_reportID != -1) {
                       _reported = true;
+                      _emergencyReport = true;
                     }
                     print(_reportID);
                   });
