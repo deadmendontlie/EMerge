@@ -20,7 +20,6 @@ class _TipsPageWidgetState extends State<TipsPage> {
 
   int _reportID;
   String _service; //service selected in the drop down
-  String _report;
   @override
   Widget build(BuildContext context) {
     final myControllerName = TextEditingController();
@@ -163,18 +162,31 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     DateTime now = DateTime.now();
                     encodedDateTime =
                         DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                    if (_service == 'None') {
-                      encodedService = "FPH";
-                    } else if (_service == 'Medical') {
-                      encodedService = "H";
-                    } else if (_service == 'Police') {
-                      encodedService = "P";
-                    } else if (_service == 'Medical and Police') {
-                      encodedService = "PH";
-                    } else if (_service == 'Fire and Police') {
-                      encodedService = "FP";
-                    } else if (_service == 'Fire and Medical') {
-                      encodedService = "FH";
+                    if (_service != null) {
+                      if (_service == 'None') {
+                        encodedService = "FPH";
+                      } else if (_service == 'Medical') {
+                        encodedService = "H";
+                      } else if (_service == 'Police') {
+                        encodedService = "P";
+                      } else if (_service == 'Medical and Police') {
+                        encodedService = "PH";
+                      } else if (_service == 'Fire and Police') {
+                        encodedService = "FP";
+                      } else if (_service == 'Fire and Medical') {
+                        encodedService = "FH";
+                      }
+                    } else {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text('Please select a service required'),
+                          );
+                        },
+                      );
                     }
                     if (myControllerName.text.toString() != "" ||
                         myControllerName.text.toString() != "\\+") {

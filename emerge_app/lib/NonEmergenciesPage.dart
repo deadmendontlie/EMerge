@@ -14,7 +14,6 @@ class NonEmergenciesPage extends StatefulWidget {
 
 int _reportID;
 String _service; //service selected in the drop down
-String _report; //what type of report is selected
 
 class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
   Position _userLocation;
@@ -173,19 +172,33 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   DateTime now = DateTime.now();
                   encodedDateTime =
                       DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                  if (_service == 'None') {
-                    encodedService = "FPH";
-                  } else if (_service == 'Medical') {
-                    encodedService = "H";
-                  } else if (_service == 'Police') {
-                    encodedService = "P";
-                  } else if (_service == 'Medical and Police') {
-                    encodedService = "PH";
-                  } else if (_service == 'Fire and Police') {
-                    encodedService = "FP";
-                  } else if (_service == 'Fire and Medical') {
-                    encodedService = "FH";
+                  if (_service != null) {
+                    if (_service == 'None') {
+                      encodedService = "FPH";
+                    } else if (_service == 'Medical') {
+                      encodedService = "H";
+                    } else if (_service == 'Police') {
+                      encodedService = "P";
+                    } else if (_service == 'Medical and Police') {
+                      encodedService = "PH";
+                    } else if (_service == 'Fire and Police') {
+                      encodedService = "FP";
+                    } else if (_service == 'Fire and Medical') {
+                      encodedService = "FH";
+                    }
+                  } else {
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+                          content: Text('Please select a service required'),
+                        );
+                      },
+                    );
                   }
+
                   if (myControllerName.text.toString() != "" ||
                       myControllerName.text.toString() != "\\+") {
                     encodeName = myControllerName.text;
@@ -202,7 +215,6 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   } else {
                     encodedAdditional = 'N/A';
                   }
-                  encodedReport = _report;
                   encodedLocation = _userLocation.toString();
                   var values = {
                     "timestamp": encodedDateTime,
@@ -215,7 +227,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                     "photo": "Null",
                     "message": encodedAdditional,
                     "report_level": "Non Emergency",
-                    "report_type": encodedReport
+                    "report_type": 'N/A'
                   };
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {

@@ -179,14 +179,39 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   DateTime now = DateTime.now();
                   encodedDateTime =
                       DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                  if (_service == 'None') {
-                    encodedService = "H";
-                  } else if (_service == 'Fire') {
-                    encodedService = "FH";
-                  } else if (_service == 'Police') {
-                    encodedService = "PH";
-                  } else if (_service == 'Fire and Police') {
-                    encodedService = "FPH";
+                  if (_service != null) {
+                    if (_service == 'None') {
+                      encodedService = "H";
+                    } else if (_service == 'Fire') {
+                      encodedService = "FH";
+                    } else if (_service == 'Police') {
+                      encodedService = "PH";
+                    } else if (_service == 'Fire and Police') {
+                      encodedService = "FPH";
+                    }
+                  } else {
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+                          content: Text('Please select a service required'),
+                        );
+                      },
+                    );
+                  }
+                  if (_report == null) {
+                    return showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+                          content: Text('Please select a report type'),
+                        );
+                      },
+                    );
                   }
                   if (myControllerName.text.toString() != "" ||
                       myControllerName.text.toString() != "\\+") {
@@ -232,7 +257,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                       return AlertDialog(
                         // Retrieve the text the user has entered by using the
                         // TextEditingController.
-                        content: Text(Json),
+                        content: Text(Json + "\nYour report was submitted"),
                       );
                     },
                   );

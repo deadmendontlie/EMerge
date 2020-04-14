@@ -60,11 +60,11 @@ class _PolicePageWidgetState extends State<PolicePage> {
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  _report = changed;
+                  _service = changed;
 
                   setState(() {});
                 },
-                value: _report,
+                value: _service,
               ), //DropdownButton
               Text(
                 "Please Select Type of Report",
@@ -72,17 +72,17 @@ class _PolicePageWidgetState extends State<PolicePage> {
               ),
               DropdownButton<String>(
                 hint: Text('No report type is selected'),
-                items: <String>['Fire', 'Medical'].map((String value) {
+                items: <String>['Shooting', 'Assault'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  _service = changed;
+                  _report = changed;
                   setState(() {});
                 },
-                value: _service,
+                value: _report,
               ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
@@ -175,14 +175,39 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     DateTime now = DateTime.now();
                     encodedDateTime =
                         DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                    if (_service == 'None') {
-                      encodedService = "P";
-                    } else if (_service == 'Medical') {
-                      encodedService = "PH";
-                    } else if (_service == 'Fire') {
-                      encodedService = "FP";
-                    } else if (_service == 'Medical and Fire') {
-                      encodedService = "FPH";
+                    if (_service != null) {
+                      if (_service == 'None') {
+                        encodedService = "P";
+                      } else if (_service == 'Medical') {
+                        encodedService = "PH";
+                      } else if (_service == 'Fire') {
+                        encodedService = "FP";
+                      } else if (_service == 'Medical and Fire') {
+                        encodedService = "FPH";
+                      }
+                    } else {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text('Please select a service required'),
+                          );
+                        },
+                      );
+                    }
+                    if (_report == null) {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text('Please select a report type'),
+                          );
+                        },
+                      );
                     }
                     if (myControllerName.text.toString() != "" ||
                         myControllerName.text.toString() != "\\+") {
