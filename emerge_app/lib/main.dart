@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 
 import 'FirePage.dart';
@@ -137,7 +138,7 @@ class StartScreen extends StatelessWidget {
                   print(_reportID);
                   if (_reportID != -1) {
                     //TODO Finish report status to actually get a report
-                    _fetchStatus().then((reportStatus) {
+                    _fetchStatus(_reportID).then((reportStatus) {
                       _currentReportStatus = reportStatus;
                       print(_currentReportStatus);
                       if (_currentReportStatus != 'Closed') {
@@ -225,9 +226,8 @@ class Status {
   }
 }
 
-Future<String> _fetchStatus() async {
+Future<String> _fetchStatus(int id) async {
   //TODO change it from test to the proper end point and make it a post or whatever
-  //TODO Also test it with the new end point and values
   final response = await http.get('http://18.212.156.43:80/test');
   if (response.statusCode == 200) {
     return Status.fromJson(json.decode(response.body)).getStatus;
@@ -235,3 +235,36 @@ Future<String> _fetchStatus() async {
     throw Exception('Currently no active reports');
   }
 }
+
+void _updategps(int id) async {
+  final reportStatus = _fetchStatus(id);
+  if (reportStatus != 'Closed') {
+    final location = await _getLocation();
+    var value = {"GPS": location};
+    final Json = json.encode(value);
+    //TODO need to submit the json here
+    final response = await http.get('http://18.212.156.43:80/test');
+    if (response.statusCode == 200) {
+      print('It worked');
+    } else {
+      throw Exception('Failed to update gps');
+    }
+  } else {
+    throw Exception('No active report');
+  }
+}
+
+Future<Position> _getLocation() async {
+  var currentLocation;
+  try {
+    currentLocation = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+  } catch (e) {
+    currentLocation = null;
+  }
+  return currentLocation;
+}
+
+void _emergencyReport() {}
+//TODO Add a timer function to run every minute
+//TODO Add a emergency submission function

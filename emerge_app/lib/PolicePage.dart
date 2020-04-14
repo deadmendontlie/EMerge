@@ -12,19 +12,17 @@ class PolicePage extends StatefulWidget {
 }
 
 class _PolicePageWidgetState extends State<PolicePage> {
-  Geolocator geolocator = Geolocator();
   Position userLocation;
   @override
   initState() {
     super.initState();
   }
 
-  int reportID;
-  String service; //service selected in the drop down
-  String report; //what type of report is selected
+  int _reportID;
+  String _service; //service selected in the drop down
+  String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
-    final myControllerDrop = TextEditingController();
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -54,26 +52,22 @@ class _PolicePageWidgetState extends State<PolicePage> {
               ),
               DropdownButton<String>(
                 hint: Text('Please Choose One'),
-                items: <String>[
-                  'None',
-                  'Fire',
-                  'Medical',
-                  'Medical and Fire'
-                ].map((String value) {
+                items: <String>['None', 'Fire', 'Medical', 'Medical and Fire']
+                    .map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  report = changed;
+                  _report = changed;
 
                   setState(() {});
                 },
-                value: report,
+                value: _report,
               ), //DropdownButton
               Text(
-                "Please Select What Services are Required",
+                "Please Select Type of Report",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               DropdownButton<String>(
@@ -85,10 +79,10 @@ class _PolicePageWidgetState extends State<PolicePage> {
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  service = changed;
+                  _service = changed;
                   setState(() {});
                 },
-                value: service,
+                value: _service,
               ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
@@ -181,13 +175,13 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     DateTime now = DateTime.now();
                     encodedDateTime =
                         DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                    if (service == 'None') {
+                    if (_service == 'None') {
                       encodedService = "P";
-                    } else if (service == 'Medical') {
+                    } else if (_service == 'Medical') {
                       encodedService = "PH";
-                    } else if (service == 'Fire') {
+                    } else if (_service == 'Fire') {
                       encodedService = "FP";
-                    } else if (service == 'Medical and Fire') {
+                    } else if (_service == 'Medical and Fire') {
                       encodedService = "FPH";
                     }
                     if (myControllerName.text.toString() != "" ||
@@ -208,7 +202,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     } else {
                       encodedAdditional = 'N/A';
                     }
-                    encodedReport = report;
+                    encodedReport = _report;
                     encodedLocation = userLocation.toString();
                     var values = {
                       "timestamp": encodedDateTime,
@@ -225,9 +219,9 @@ class _PolicePageWidgetState extends State<PolicePage> {
                     };
                     final Json = json.encode(values);
                     _postReport(Json).then((reportIDValue) {
-                      reportID = reportIDValue;
-                      print(reportID);
-                      Navigator.pop(context, reportID);
+                      _reportID = reportIDValue;
+                      print(_reportID);
+                      Navigator.pop(context, _reportID);
                     });
                     //TODO Add Submission results later
                     return showDialog(

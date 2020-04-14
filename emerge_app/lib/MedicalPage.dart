@@ -12,16 +12,15 @@ class MedicalPage extends StatefulWidget {
 }
 
 class _MedicalPageWidgetState extends State<MedicalPage> {
-  Geolocator geolocator = Geolocator();
-  Position userLocation;
+  Position _userLocation;
   @override
   initState() {
     super.initState();
   }
 
-  int reportID;
-  String service; //service selected in the drop down
-  String report; //what type of report is selected
+  int _reportID;
+  String _service; //service selected in the drop down
+  String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
     final myControllerName = TextEditingController();
@@ -60,10 +59,10 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 );
               }).toList(),
               onChanged: (String changed) {
-                service = changed;
+                _service = changed;
                 setState(() {});
               },
-              value: service,
+              value: _service,
             ), //DropdownButton
             Text(
               "Please Select Type of Report",
@@ -83,10 +82,10 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 );
               }).toList(),
               onChanged: (String changed) {
-                report = changed;
+                _report = changed;
                 setState(() {});
               },
-              value: report,
+              value: _report,
             ), //DropdownButton
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",
@@ -167,7 +166,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 onPressed: () {
                   _getLocation().then((value) {
                     setState(() {
-                      userLocation = value;
+                      _userLocation = value;
                     });
                   });
                   String encodeName;
@@ -180,13 +179,13 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   DateTime now = DateTime.now();
                   encodedDateTime =
                       DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                  if (service == 'None') {
+                  if (_service == 'None') {
                     encodedService = "H";
-                  } else if (service == 'Fire') {
+                  } else if (_service == 'Fire') {
                     encodedService = "FH";
-                  } else if (service == 'Police') {
+                  } else if (_service == 'Police') {
                     encodedService = "PH";
-                  } else if (service == 'Fire and Police') {
+                  } else if (_service == 'Fire and Police') {
                     encodedService = "FPH";
                   }
                   if (myControllerName.text.toString() != "" ||
@@ -205,8 +204,8 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   } else {
                     encodedAdditional = 'N/A';
                   }
-                  encodedReport = report;
-                  encodedLocation = userLocation.toString();
+                  encodedReport = _report;
+                  encodedLocation = _userLocation.toString();
                   var values = {
                     "timestamp": encodedDateTime,
                     "required_responders": encodedService,
@@ -222,9 +221,9 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   };
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {
-                    reportID = reportIDValue;
-                    print(reportID);
-                    Navigator.pop(context, reportID);
+                    _reportID = reportIDValue;
+                    print(_reportID);
+                    Navigator.pop(context, _reportID);
                   });
                   //TODO Remove the dialog when this is done
                   return showDialog(

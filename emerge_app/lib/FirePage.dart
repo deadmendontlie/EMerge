@@ -13,16 +13,15 @@ class FirePage extends StatefulWidget {
 }
 
 class _FirePageWidgetState extends State<FirePage> {
-  Geolocator geolocator = Geolocator();
   Position userLocation;
   @override
   initState() {
     super.initState();
   }
 
-  int reportID;
-  String service; //service selected in the drop down
-  String report; //what type of report is selected
+  int _reportID;
+  String _service; //service selected in the drop down
+  String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
     final myControllerName = TextEditingController();
@@ -67,13 +66,13 @@ class _FirePageWidgetState extends State<FirePage> {
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  service = changed;
+                  _service = changed;
                   setState(() {});
                 },
-                value: service,
+                value: _service,
               ),
               Text(
-                "Please Select What Services are Required",
+                "Please Select Type of Report",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
               ),
               DropdownButton<String>(
@@ -87,10 +86,10 @@ class _FirePageWidgetState extends State<FirePage> {
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  report = changed;
+                  _report = changed;
                   setState(() {});
                 },
-                value: report,
+                value: _report,
               ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
@@ -183,13 +182,13 @@ class _FirePageWidgetState extends State<FirePage> {
                     DateTime now = DateTime.now();
                     encodedDateTime =
                         DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                    if (service == 'None') {
+                    if (_service == 'None') {
                       encodedService = "F";
-                    } else if (service == 'Medical') {
+                    } else if (_service == 'Medical') {
                       encodedService = "FH";
-                    } else if (service == 'Police') {
+                    } else if (_service == 'Police') {
                       encodedService = "FP";
-                    } else if (service == 'Medical and Police') {
+                    } else if (_service == 'Medical and Police') {
                       encodedService = "FPH";
                     }
                     if (myControllerName.text.toString() != "" ||
@@ -210,7 +209,7 @@ class _FirePageWidgetState extends State<FirePage> {
                     } else {
                       encodedAdditional = 'N/A';
                     }
-                    encodedReport = report;
+                    encodedReport = _report;
                     encodedLocation = userLocation.toString();
                     var values = {
                       "timestamp": encodedDateTime,
@@ -227,9 +226,9 @@ class _FirePageWidgetState extends State<FirePage> {
                     };
                     final Json = json.encode(values);
                     _postReport(Json).then((reportIDValue) {
-                      reportID = reportIDValue;
-                      print(reportID);
-                      Navigator.pop(context, reportID);
+                      _reportID = reportIDValue;
+                      print(_reportID);
+                      Navigator.pop(context, _reportID);
                     });
                     return showDialog(
                       context: context,

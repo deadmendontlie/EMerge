@@ -12,16 +12,15 @@ class TipsPage extends StatefulWidget {
 }
 
 class _TipsPageWidgetState extends State<TipsPage> {
-  Geolocator geolocator = Geolocator();
   Position userLocation;
   @override
   initState() {
     super.initState();
   }
 
-  int reportID;
-  String service; //service selected in the drop down
-  String report;
+  int _reportID;
+  String _service; //service selected in the drop down
+  String _report;
   @override
   Widget build(BuildContext context) {
     final myControllerName = TextEditingController();
@@ -69,10 +68,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
                   );
                 }).toList(),
                 onChanged: (String changed) {
-                  service = changed;
+                  _service = changed;
                   setState(() {});
                 },
-                value: service,
+                value: _service,
               ),
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
@@ -164,17 +163,17 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     DateTime now = DateTime.now();
                     encodedDateTime =
                         DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                    if (service == 'None') {
+                    if (_service == 'None') {
                       encodedService = "FPH";
-                    } else if (service == 'Medical') {
+                    } else if (_service == 'Medical') {
                       encodedService = "H";
-                    } else if (service == 'Police') {
+                    } else if (_service == 'Police') {
                       encodedService = "P";
-                    } else if (service == 'Medical and Police') {
+                    } else if (_service == 'Medical and Police') {
                       encodedService = "PH";
-                    } else if (service == 'Fire and Police') {
+                    } else if (_service == 'Fire and Police') {
                       encodedService = "FP";
-                    } else if (service == 'Fire and Medical') {
+                    } else if (_service == 'Fire and Medical') {
                       encodedService = "FH";
                     }
                     if (myControllerName.text.toString() != "" ||
@@ -211,9 +210,9 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     };
                     final Json = json.encode(values);
                     _postReport(Json).then((reportIDValue) {
-                      reportID = reportIDValue;
-                      print(reportID);
-                      Navigator.pop(context, reportID);
+                      _reportID = reportIDValue;
+                      print(_reportID);
+                      Navigator.pop(context, _reportID);
                     });
                     //TODO Add Submission results later
                     return showDialog(

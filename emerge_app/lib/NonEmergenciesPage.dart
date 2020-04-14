@@ -12,13 +12,12 @@ class NonEmergenciesPage extends StatefulWidget {
       _NonEmergenciesPageWidgetState();
 }
 
-int reportID;
-String service; //service selected in the drop down
-String report; //what type of report is selected
+int _reportID;
+String _service; //service selected in the drop down
+String _report; //what type of report is selected
 
 class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
-  Geolocator geolocator = Geolocator();
-  Position userLocation;
+  Position _userLocation;
   @override
   initState() {
     super.initState();
@@ -77,10 +76,10 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 );
               }).toList(),
               onChanged: (String changed) {
-                service = changed;
+                _service = changed;
                 setState(() {});
               },
-              value: service,
+              value: _service,
             ),
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",
@@ -161,7 +160,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 onPressed: () {
                   _getLocation().then((value) {
                     setState(() {
-                      userLocation = value;
+                      _userLocation = value;
                     });
                   });
                   String encodeName;
@@ -174,17 +173,17 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   DateTime now = DateTime.now();
                   encodedDateTime =
                       DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
-                  if (service == 'None') {
+                  if (_service == 'None') {
                     encodedService = "FPH";
-                  } else if (service == 'Medical') {
+                  } else if (_service == 'Medical') {
                     encodedService = "H";
-                  } else if (service == 'Police') {
+                  } else if (_service == 'Police') {
                     encodedService = "P";
-                  } else if (service == 'Medical and Police') {
+                  } else if (_service == 'Medical and Police') {
                     encodedService = "PH";
-                  } else if (service == 'Fire and Police') {
+                  } else if (_service == 'Fire and Police') {
                     encodedService = "FP";
-                  } else if (service == 'Fire and Medical') {
+                  } else if (_service == 'Fire and Medical') {
                     encodedService = "FH";
                   }
                   if (myControllerName.text.toString() != "" ||
@@ -203,8 +202,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   } else {
                     encodedAdditional = 'N/A';
                   }
-                  encodedReport = report;
-                  encodedLocation = userLocation.toString();
+                  encodedReport = _report;
+                  encodedLocation = _userLocation.toString();
                   var values = {
                     "timestamp": encodedDateTime,
                     "required_responders": encodedService,
@@ -220,9 +219,9 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   };
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {
-                    reportID = reportIDValue;
-                    print(reportID);
-                    Navigator.pop(context, reportID);
+                    _reportID = reportIDValue;
+                    print(_reportID);
+                    Navigator.pop(context, _reportID);
                   });
                   //TODO Add Submission results later
                   return showDialog(
