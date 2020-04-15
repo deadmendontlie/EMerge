@@ -250,10 +250,10 @@ void _updategps(int id) async {
   final reportStatus = _fetchStatus(id);
   if (reportStatus != 'Closed') {
     final location = await _getLocation();
-    var value = {"GPS": location};
+    var value = {"report_id": id, "GPS": location};
     final Json = json.encode(value);
     //TODO need to submit the json here
-    final response = await http.get('http://18.212.156.43:80/test');
+    final response = await http.get('http://18.212.156.43:80/updateGPS');
     if (response.statusCode == 200) {
       print('It worked');
     } else {
