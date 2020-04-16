@@ -48,7 +48,8 @@ def get_all_agency():
      resultSet = queryResult.fetchall()
 
      resultJSON = jsonify(dict(row) for row in resultSet)
-     return json.dumps(str(resultSet))
+     return json.dumps(str(resultJSON))
+     
 
 #end get_all_agency()
 
@@ -56,7 +57,7 @@ def get_all_agency():
 #updates GPS location for a given report
 #receives: JSON { "report_id" : <int report_id>"GPS" : <String GPS> } via POST
 #returns: JSON same as input
-@app.route('/change_report_gps', methods = ['POST'])
+@app.route('/change_report_gps', methods = ['PUT'])
 def change_report_gps():
      req_data = request.get_json()
 
@@ -82,7 +83,7 @@ def change_report_gps():
 #   "urgency" : <String reportUrgency>, "GPS" : <String reportGPS>, "name" : <String reportName>, "phone" : <String reportPhone>, "photo" : reportPhoto,
 #   "message" : <String reportMessage>, "report_level" : <String reportLevel>, "type" : <String reportType> } via POST
 #returns: JSON with report_id of inserted report
-@app.route('/add_report', methods = ['POST'])
+@app.route('/add_report', methods = ['PUT'])
 def add_report():
      req_data = request.get_json()
 
@@ -127,7 +128,7 @@ def add_report():
 #retrieves report
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON all fields from report row
-@app.route('/get_report', methods=['POST', 'OPTIONS'])
+@app.route('/get_report', methods=['GET', 'OPTIONS'])
 @cross_origin()
 def get_report():
 
@@ -136,7 +137,7 @@ def get_report():
      reportId = req_data['report_id']
 
      #build query
-     query = report.select().where(report.c.report_id == reportId)
+     query = report.select().where(report.c.report_id == report_id)
 
      #execute query and store resolt proxy
      queryResult = connection.execute(query)
@@ -146,18 +147,100 @@ def get_report():
 
      #convert result row set to list
      resultList = [dict(row) for row in resultSet]
-     #print(resultList)
+     print(resultList)
 
      #convert result list to dictionary
      resultDict = resultList[0]
-     #print(resultDict)
+     print(resultDict)
 
      #jsonifiy and return query results
      resultJSON = jsonify(resultDict)
      
      return(resultJSON)
+     
 
 #end get_report()
+
+
+#add municipality
+@app.route('/add_muni', methods=['PUT', 'OPTIONS'])
+@cross_origin()
+def add_muni():
+
+    #get input JSON
+    request_data = request.get_json()
+
+    jurisdictionRadius = request_data['jur_radius']
+    muniName = request_data['name']
+    muniState = request_data['state']
+    muniUID = request_data['UID']
+
+    new_muni = municipality.insert().values(jurisdiction_radius = jurisdictionRadius,
+            name = muniName,
+            state = muniState,
+            UID = muniUID)
+
+    queryResult = connection.execute(new_muni)
+
+    return jsonify({"municipality_id" : queryResult.inserted_primary_key[0]})
+
+#end add_muni()
+
+
+#retrieves report
+#receives: JSON { "report_id" : <int reportId> }
+#returns: JSON all fields from report row
+@app.route('/update_status', methods=['GET', 'POST', 'PUT'])
+@cross_origin()
+def update_status():
+
+    #get input JSON
+    request_data = request.get_json()
+    reportId = request_data['report_id']
+    newStatus = request_data['status']
+
+    query = update(report).where(report.c.report_id == reportId).\
+            values(status = newStatus)
+    connection.execute(query)
+
+    #jsonify and return query results
+    return jsonify({'status' : str(newStatus)})
+
+#end add_muni()
+
+#retrieves report status
+#receives: JSON { "report_id" : <int reportId> }
+#returns: JSON field of the status of the desired report
+@app.route('/get_status', methods=['GET', 'OPTIONS'])
+def get_status():
+
+    #get input JSON
+    request_data = request.get_json()
+    reportId = request_data['report_id']
+
+    query = select([report.c.status]).where(report.c.report_id == reportId)
+    queryResult = connection.execute(query)
+    resultSet = queryResult.fetchone()
+    resultList = dict(resultSet)
+    #resultDict = resultList[0]
+    print(resultList)
+
+    #jsonify and return query results
+    resultJSON = jsonify(resultList)
+    return(resultJSON)
+    #return jsonify({"status" : resultSet})
+#end of get_status
+
+
+
+#testValue
+#return int
+@app.route('/test', methods=['GET'])
+def test():
+    #get test
+
+    return jsonify({"test" : 'SHOW EM'})
+#end test
 
 
 
