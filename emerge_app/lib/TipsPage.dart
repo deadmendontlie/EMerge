@@ -215,7 +215,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                       "GPS": encodedLocation,
                       "name": encodeName,
                       "phone": encodeNumber,
-                      "photo": "Null",
+                      "photo": null,
                       "message": encodedAdditional,
                       "report_level": "Tip",
                       "report_type": "N/A"

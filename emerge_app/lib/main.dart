@@ -18,6 +18,7 @@ void main() {
   ));
 }
 
+//TODO Look into changing this to stateful or look into local fle parsing
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -250,10 +251,15 @@ void _updategps(int id) async {
   final reportStatus = _fetchStatus(id);
   if (reportStatus != 'Closed') {
     final location = await _getLocation();
-    var value = {"report_id": id, "GPS": location};
+    var value = {"report_id": id, "GPS": location.toString()};
     final Json = json.encode(value);
     //TODO need to submit the json here
-    final response = await http.get('http://18.212.156.43:80/updateGPS');
+    final response = await http.put('http://18.212.156.43:80/change_report_gps',
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+        body: Json);
     if (response.statusCode == 200) {
       print('It worked');
     } else {
@@ -321,7 +327,7 @@ Future<int> _postEmergency() async {
     "GPS": encodedLocation,
     "name": 'Anonymous',
     "phone": 'N/A',
-    "photo": "Null",
+    "photo": null,
     "message":
         'This is a emergency report we do not have anymore information at this time',
     "report_level": "Emergency",

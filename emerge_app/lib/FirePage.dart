@@ -244,7 +244,7 @@ class _FirePageWidgetState extends State<FirePage> {
                       "GPS": encodedLocation,
                       "name": encodeName,
                       "phone": encodeNumber,
-                      "photo": "Null",
+                      "photo": null,
                       "message": encodedAdditional,
                       "report_level": "Emergency",
                       "report_type": encodedReport

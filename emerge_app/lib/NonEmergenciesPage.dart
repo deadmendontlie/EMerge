@@ -224,7 +224,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                     "GPS": encodedLocation,
                     "name": encodeName,
                     "phone": encodeNumber,
-                    "photo": "Null",
+                    "photo": null,
                     "message": encodedAdditional,
                     "report_level": "Non Emergency",
                     "report_type": 'N/A'

@@ -237,7 +237,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                       "GPS": encodedLocation,
                       "name": encodeName,
                       "phone": encodeNumber,
-                      "photo": "Null",
+                      "photo": null,
                       "message": encodedAdditional,
                       "report_level": "Emergency",
                       "report_type": encodedReport
