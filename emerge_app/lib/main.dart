@@ -139,6 +139,7 @@ class StartScreen extends StatelessWidget {
                     }
                     print(_reportID);
                   });
+                  _emergencyReport = true;
                 },
               ),
             ),
@@ -229,7 +230,7 @@ class Status {
   Status({this.status});
   factory Status.fromJson(Map<String, dynamic> json) {
     return Status(
-      status: json['test'],
+      status: json['status'],
     );
   }
   String get getStatus {
@@ -239,7 +240,14 @@ class Status {
 
 Future<String> _fetchStatus(int id) async {
   //TODO change it from test to the proper end point and make it a post or whatever
-  final response = await http.get('http://18.212.156.43:80/test');
+  var value = {"report_id": id};
+  final Json = json.encode(value);
+  final response = await http.post('http://18.212.156.43:80/get_status',
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+      body: Json);
   if (response.statusCode == 200) {
     return Status.fromJson(json.decode(response.body)).getStatus;
   } else {
