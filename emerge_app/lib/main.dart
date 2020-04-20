@@ -198,6 +198,17 @@ class StartScreen extends StatelessWidget {
                         }
                       }
                     });
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+                          content: Text('You have no active reports'),
+                        );
+                      },
+                    );
                   }
                 },
               ),
