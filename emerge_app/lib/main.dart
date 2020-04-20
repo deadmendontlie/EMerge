@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'FirePage.dart';
 import 'MedicalPage.dart';
@@ -56,6 +58,7 @@ class StartScreen extends StatelessWidget {
                 onPressed: () {
                   //Returns a value currently when the function ends
                   //TODO Copy all of the submoitting reports code to here and other pages
+                  //TODO Put the writes in here and check to see if something was already written to the file
                   _navigateToMedicalPage(context).then((newReportID) {
                     _reportID = newReportID;
                     print(_reportID);
@@ -346,4 +349,35 @@ Future<int> _postEmergency() async {
     print(reportIDValue);
     return reportIDValue;
   });
+}
+
+Future<String> get _localPath async {
+  final directory = await getApplicationDocumentsDirectory();
+  return directory.path;
+}
+
+Future<File> get _localFile async {
+  final path = await _localPath;
+  return File('$path/info.txt');
+}
+
+//TODO Add the access and writing operations to the file for the data
+//TODO Add the checks to lock them out of submitting new reports till theirs is done
+//TODO Also change all of the check to check from the file
+//File formatting should be as such reportID:1231432523 reportStatus:Closed
+Future<void> _writeDataToFile(String info) async {
+  File file = await _localFile;
+  file.writeAsStringSync(info);
+}
+
+Future<int> _getReportID(String data) async {
+  File file = await _localFile;
+  String infoPreParsed = file.readAsStringSync();
+  return int.parse(infoPreParsed.split(' ').first.split(':').last);
+}
+
+Future<String> _getReportStatus(String data) async {
+  File file = await _localFile;
+  String infoPreParsed = file.readAsStringSync();
+  return infoPreParsed.split(' ').last.split(':').last;
 }
