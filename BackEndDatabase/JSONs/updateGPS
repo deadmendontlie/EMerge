@@ -1,0 +1,15 @@
+18.212.156.43/get_report
+
+input JSON:
+
+{
+	"report_id" : 12, 
+	"GPS" : "40N, 76W"
+}
+
+result JSON:
+
+{
+    "GPS": "40N, 88W"
+}
+

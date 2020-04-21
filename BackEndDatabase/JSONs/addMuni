@@ -1,0 +1,16 @@
+http://18.212.156.43/add_muni
+
+
+input json:
+{
+	"name" : "Atlantic City",
+	"state" : "NJ",
+	"GPS_coord" : "Lat: 39.3765899, Long: -74.5228634"
+}
+
+
+
+return json:
+{
+    "municipality_id": 8
+}
