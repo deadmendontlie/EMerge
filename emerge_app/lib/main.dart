@@ -39,12 +39,9 @@ class MyApp extends StatelessWidget {
 }
 
 class StartScreen extends StatelessWidget {
-  int _reportID = -1;
-  bool _reported = false;
-  String _currentReportStatus;
-  bool _emergencyReport = false;
   @override
   Widget build(BuildContext context) {
+    _localFile;
     return Scaffold(
         appBar: AppBar(
           title: Text('Start Screen'),
@@ -59,11 +56,15 @@ class StartScreen extends StatelessWidget {
                   //Returns a value currently when the function ends
                   //TODO Copy all of the submoitting reports code to here and other pages
                   //TODO Put the writes in here and check to see if something was already written to the file
-                  _navigateToMedicalPage(context).then((newReportID) {
-                    _reportID = newReportID;
-                    print(_reportID);
-                    if (_reportID != -1) {
-                      _reported = true;
+                  _getReportID().then((reportID) {
+                    if (reportID == -1) {
+                      _navigateToMedicalPage(context).then((newReportID) {
+                        int reportID = newReportID;
+                        print(reportID);
+                        if (reportID != -1) {
+                          _writeDataToFile('reportID:' + reportID.toString());
+                        }
+                      });
                     }
                   });
                 },
@@ -74,11 +75,15 @@ class StartScreen extends StatelessWidget {
                 child: Text('Police'),
                 onPressed: () {
                   //Returns a value currently when the function ends
-                  _navigateToPolicePage(context).then((newReportID) {
-                    _reportID = newReportID;
-                    print(_reportID);
-                    if (_reportID != -1) {
-                      _reported = true;
+                  _getReportID().then((reportID) {
+                    if (reportID == -1) {
+                      _navigateToPolicePage(context).then((newReportID) {
+                        int reportID = newReportID;
+                        print(reportID);
+                        if (reportID != -1) {
+                          _writeDataToFile('reportID:' + reportID.toString());
+                        }
+                      });
                     }
                   });
                 },
@@ -89,11 +94,15 @@ class StartScreen extends StatelessWidget {
                 child: Text('Fire'),
                 onPressed: () {
                   //Returns a value currently when the function ends
-                  _navigateToFirePage(context).then((newReportID) {
-                    _reportID = newReportID;
-                    print(_reportID);
-                    if (_reportID != -1) {
-                      _reported = true;
+                  _getReportID().then((reportID) {
+                    if (reportID == -1) {
+                      _navigateToFirePage(context).then((newReportID) {
+                        int reportID = newReportID;
+                        print(reportID);
+                        if (reportID != -1) {
+                          _writeDataToFile('reportID:' + reportID.toString());
+                        }
+                      });
                     }
                   });
                 },
@@ -104,11 +113,15 @@ class StartScreen extends StatelessWidget {
                 child: Text('Tips'),
                 onPressed: () {
                   //Returns a value currently when the function ends
-                  _navigateToTipsPage(context).then((newReportID) {
-                    _reportID = newReportID;
-                    print(_reportID);
-                    if (_reportID != -1) {
-                      _reported = true;
+                  _getReportID().then((reportID) {
+                    if (reportID == -1) {
+                      _navigateToTipsPage(context).then((newReportID) {
+                        int reportID = newReportID;
+                        print(reportID);
+                        if (reportID != -1) {
+                          _writeDataToFile('reportID:' + reportID.toString());
+                        }
+                      });
                     }
                   });
                 },
@@ -119,11 +132,16 @@ class StartScreen extends StatelessWidget {
                 child: Text('Non-Emergencies'),
                 onPressed: () {
                   //Returns a value currently when the function ends
-                  _navigateToNonEmergenciesPage(context).then((newReportID) {
-                    _reportID = newReportID;
-                    print(_reportID);
-                    if (_reportID != 1) {
-                      _reported = true;
+                  _getReportID().then((reportID) {
+                    if (reportID == -1) {
+                      _navigateToNonEmergenciesPage(context)
+                          .then((newReportID) {
+                        int reportID = newReportID;
+                        print(reportID);
+                        if (reportID != -1) {
+                          _writeDataToFile('reportID:' + reportID.toString());
+                        }
+                      });
                     }
                   });
                 },
@@ -134,15 +152,17 @@ class StartScreen extends StatelessWidget {
                 child: Text('Emergency'),
                 onPressed: () {
                   //TODO add code to submit an emergency report
-                  _postEmergency().then((onValue) {
-                    _reportID = onValue;
-                    if (_reportID != -1) {
-                      _reported = true;
-                      _emergencyReport = true;
+                  _getReportID().then((reportID) {
+                    if (reportID == -1) {
+                      _postEmergency().then((newReportID) {
+                        int reportID = newReportID;
+                        print(reportID);
+                        if (reportID != -1) {
+                          _writeDataToFile('reportID:' + reportID.toString());
+                        }
+                      });
                     }
-                    print(_reportID);
                   });
-                  _emergencyReport = true;
                 },
               ),
             ),
@@ -150,28 +170,14 @@ class StartScreen extends StatelessWidget {
               child: RaisedButton(
                 child: Text('Report Status'),
                 onPressed: () {
-                  print(_reportID);
-                  if (_reportID != -1) {
-                    //TODO Finish report status to actually get a report
-                    _fetchStatus(_reportID).then((reportStatus) {
-                      _currentReportStatus = reportStatus;
-                      print(_currentReportStatus);
-                      if (_currentReportStatus != 'Closed') {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            return AlertDialog(
-                              // Retrieve the text the user has entered by using the
-                              // TextEditingController.
-                              content: Text(
-                                  'Report Status is ' + _currentReportStatus),
-                            );
-                          },
-                        );
-                      } else {
-                        if (_reported == true) {
-                          _reported = false;
-                          _reportID = -1;
+                  _getReportID().then((reportID) {
+                    int tempID = reportID;
+                    print(tempID);
+                    if (tempID != -1) {
+                      _fetchStatus(tempID).then((reportStatus) {
+                        String currentReportStatus = reportStatus;
+                        print(currentReportStatus);
+                        if (currentReportStatus != 'Closed') {
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -179,38 +185,53 @@ class StartScreen extends StatelessWidget {
                                 // Retrieve the text the user has entered by using the
                                 // TextEditingController.
                                 content: Text(
-                                    'Your report was closed and or solved'),
+                                    'Report Status is ' + currentReportStatus),
                               );
                             },
                           );
                         } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                // Retrieve the text the user has entered by using the
-                                // TextEditingController.
-                                content: Text(
-                                    'Your report was closed or you have no active reports'),
-                              );
-                            },
-                          );
+                          if (tempID != -1) {
+                            _resetFile();
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  // Retrieve the text the user has entered by using the
+                                  // TextEditingController.
+                                  content: Text(
+                                      'Your report was closed and or solved'),
+                                );
+                              },
+                            );
+                          } else {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  // Retrieve the text the user has entered by using the
+                                  // TextEditingController.
+                                  content: Text(
+                                      'Your report was closed or you have no active reports'),
+                                );
+                              },
+                            );
+                          }
                         }
-                      }
-                    });
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          // Retrieve the text the user has entered by using the
-                          // TextEditingController.
-                          content: Text('You have no active reports'),
-                        );
-                      },
-                    );
-                  }
-                },
+                      });
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text('You have no active reports'),
+                          );
+                        },
+                      );
+                    }
+                  });
+                }, //On pressed
               ),
             ),
           ],
@@ -369,26 +390,30 @@ Future<String> get _localPath async {
 
 Future<File> get _localFile async {
   final path = await _localPath;
-  return File('$path/info.txt');
+  if (!File('$path/info.txt').existsSync()) {
+    File temp = File('$path/info.txt');
+    temp.writeAsStringSync('reportID:-1');
+  } else {
+    return File('$path/info.txt');
+  }
 }
 
 //TODO Add the access and writing operations to the file for the data
 //TODO Add the checks to lock them out of submitting new reports till theirs is done
 //TODO Also change all of the check to check from the file
-//File formatting should be as such reportID:1231432523 reportStatus:Closed
+//File formatting should be as such
 Future<void> _writeDataToFile(String info) async {
   File file = await _localFile;
   file.writeAsStringSync(info);
 }
 
-Future<int> _getReportID(String data) async {
+Future<int> _getReportID() async {
   File file = await _localFile;
   String infoPreParsed = file.readAsStringSync();
-  return int.parse(infoPreParsed.split(' ').first.split(':').last);
+  return int.parse(infoPreParsed.split(':').last);
 }
 
-Future<String> _getReportStatus(String data) async {
-  File file = await _localFile;
-  String infoPreParsed = file.readAsStringSync();
-  return infoPreParsed.split(' ').last.split(':').last;
+void _resetFile() async {
+  File temp = await _localFile;
+  temp.writeAsStringSync('reportID:-1');
 }
