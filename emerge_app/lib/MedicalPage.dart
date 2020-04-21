@@ -45,6 +45,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
           children: [
             //TODO Clean up all of the text and add all of the proper report types
             //TODO add a verification pop up before they submit the report
+            //TODO Remove the dialog at the end when this is done
             Text(
               "Please Select What Services are Required as well(Defaults to Just Medical)",
               style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
@@ -250,7 +251,6 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                     print(_reportID);
                     Navigator.pop(context, _reportID);
                   });
-                  //TODO Remove the dialog when this is done
                   return showDialog(
                     context: context,
                     builder: (context) {

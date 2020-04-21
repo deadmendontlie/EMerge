@@ -43,14 +43,9 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            //TODO Remember later to center these and to add the scrolling functionality to the screen and put column inside it
-            //TODO Also add the drop downs and stuff later
-            //TODO Once this is all done and we have the http methods and stuff add them later and maybe have it make a json file on submit
-            //TODO Add the drop down menus and fill them with info
-            //TODO Make the text boxes nice and put extra info in them if needed
-            //TODO Add other things need for the text boxes and drop downs
-            //TODO Make the submit button work
+            //TODO Clean up all of the text and add all of the proper report types
             //TODO add a verification pop up before they submit the report
+            //TODO Remove the dialog at the end when this is done
             //This pge will be able to send to medical fire and police as well but will be labelled differently
             Text(
               "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
@@ -235,7 +230,6 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                     print(_reportID);
                     Navigator.pop(context, _reportID);
                   });
-                  //TODO Add Submission results later
                   return showDialog(
                     context: context,
                     builder: (context) {
