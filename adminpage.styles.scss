@@ -83,7 +83,7 @@
   }
   
   .button-container {
-      float: left;
+      float: inherit;
       padding-top: 2%;
       right: 0;
   }
@@ -103,4 +103,17 @@
     border-bottom: 2px solid gray;
   }
 
+.title{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.table{
+  tr:nth-child(even) {background-color: #f2f2f2;}
+}
+
+.dropbox{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
   
