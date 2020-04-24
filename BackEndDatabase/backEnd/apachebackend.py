@@ -5,6 +5,7 @@ from sqlalchemy import *
 import flask_cors
 from flask_cors import CORS, cross_origin
 import sqlalchemy as db
+from sqlalchemy.orm import sessionmaker
 import json
 
 app = Flask(__name__)
@@ -21,34 +22,46 @@ mysql = MySQL(app)
 from sqlalchemy import create_engine
 engine = create_engine('mysql://root:emerge@localhost:3306/emerge')
 connection = engine.connect()
+
+Session = sessionmaker(bind=engine)
+session = Session()
+
 metadata = db.MetaData()
 #create database Table objects for sqlalchemy to interact with
 emerRespAgency = db.Table('EmergencyResponseAgency', metadata, autoload=True, autoload_with=engine)
+municipality = db.Table('Municipality', metadata, autoload=True, autoload_with=engine)
 report = db.Table('Report', metadata, autoload=True, autoload_with=engine)
 
 
 
 #retrieves all emergency response agencies for all municipalities
-#receives: empty GET request
-#returns: JSON all responding agencies for all municipalities
+#receives: GET request
+#returns: JSON array with all responding agencies for all municipalities
 @app.route('/get_all_agency', methods=['GET'])
 def get_all_agency():
 
-     print(emerRespAgency.columns.keys())
-
-     #outString = " "
-     #return outString.join(emerRespAgency.columns.keys())
-
-     #return json.dumps(emerRespAgency.columns.keys())
      query = db.select([emerRespAgency])
-     #return json.dumps(query)
-
-     queryResult = connection.execute(query)
+     
+     queryResult = session.execute(query)
+     session.commit()
      
      resultSet = queryResult.fetchall()
 
-     resultJSON = jsonify(dict(row) for row in resultSet)
-     return json.dumps(str(resultJSON))
+     #resultString = "{" + str([dict((key, value) for key, value in row.items()) for row in resultSet]).strip('[]') + "}"
+     #print(resultString)
+
+     resultDict = [dict((key, value) for key, value in row.items()) for row in resultSet]
+     
+     resultJSON = jsonify(resultDict)
+     print(resultJSON)
+     #for row in resultSet:
+      #    resultDict = dict(row)
+          #print(resultDict)
+     #print("outside loop resulDict = " + str(resultDict))
+
+     #print(" resultDict = " , resultDict)
+          
+     return (resultJSON)
      
 
 #end get_all_agency()
@@ -64,14 +77,10 @@ def change_report_gps():
      gpsCoord = req_data['GPS']
      reportNum = req_data['report_id']
      
-     query = update(report).where(report.c.report_id==reportNum).\
-          values(GPS=gpsCoord)
+     query = update(report).where(report.c.report_id==reportNum).values(GPS=gpsCoord)
 
-     #print (query)
-     #print (str(gpsCoord))
-     #print (str(reportNum))
-     
-     connection.execute(query)
+     session.execute(query)
+     session.commit()
      
      return jsonify({'GPS' : str(gpsCoord)})
 
@@ -116,9 +125,8 @@ def add_report():
             report_type = reportType)
 
      
-     queryResult = connection.execute(query)
-
-     #result = dict((k, [k]) for k
+     queryResult = session.execute(query)
+     session.commit()
 
      return jsonify({"report_id" : queryResult.inserted_primary_key[0]})
 
@@ -128,7 +136,7 @@ def add_report():
 #retrieves report
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON all fields from report row
-@app.route('/get_report', methods=['GET', 'OPTIONS'])
+@app.route('/get_report', methods=['GET', 'POST', 'OPTIONS'])
 @cross_origin()
 def get_report():
 
@@ -137,25 +145,26 @@ def get_report():
      reportId = req_data['report_id']
 
      #build query
-     query = report.select().where(report.c.report_id == report_id)
+     query = report.select().where(report.c.report_id == reportId)
 
      #execute query and store resolt proxy
-     queryResult = connection.execute(query)
+     queryResult = session.execute(query)
+     session.commit()
 
      #get result row set
      resultSet = queryResult.fetchall()
 
      #convert result row set to list
      resultList = [dict(row) for row in resultSet]
-     print(resultList)
+     #print(resultList)
 
      #convert result list to dictionary
      resultDict = resultList[0]
-     print(resultDict)
+     #print(resultDict)
 
      #jsonifiy and return query results
      resultJSON = jsonify(resultDict)
-     
+          
      return(resultJSON)
      
 
@@ -166,23 +175,22 @@ def get_report():
 @app.route('/add_muni', methods=['PUT', 'OPTIONS'])
 @cross_origin()
 def add_muni():
+     #get input JSON
+     request_data = request.get_json()
 
-    #get input JSON
-    request_data = request.get_json()
+     coordinates = request_data['GPS_coord']
+     muniName = request_data['name']
+     muniState = request_data['state']
 
-    jurisdictionRadius = request_data['jur_radius']
-    muniName = request_data['name']
-    muniState = request_data['state']
-    muniUID = request_data['UID']
+        
+     query = insert(municipality).values(GPS_coord = coordinates,
+             name = muniName,
+             state = muniState)
 
-    new_muni = municipality.insert().values(jurisdiction_radius = jurisdictionRadius,
-            name = muniName,
-            state = muniState,
-            UID = muniUID)
+     queryResult = session.execute(query)
+     session.commit()
 
-    queryResult = connection.execute(new_muni)
-
-    return jsonify({"municipality_id" : queryResult.inserted_primary_key[0]})
+     return jsonify({"municipality_id" : queryResult.inserted_primary_key[0]})
 
 #end add_muni()
 
@@ -190,7 +198,7 @@ def add_muni():
 #retrieves report
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON all fields from report row
-@app.route('/update_status', methods=['GET', 'POST', 'PUT'])
+@app.route('/update_status', methods=['PUT'])
 @cross_origin()
 def update_status():
 
@@ -201,7 +209,8 @@ def update_status():
 
     query = update(report).where(report.c.report_id == reportId).\
             values(status = newStatus)
-    connection.execute(query)
+    session.execute(query)
+    session.commit()
 
     #jsonify and return query results
     return jsonify({'status' : str(newStatus)})
@@ -211,22 +220,27 @@ def update_status():
 #retrieves report status
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON field of the status of the desired report
-@app.route('/get_status', methods=['GET', 'OPTIONS'])
+@app.route('/get_status', methods=['POST', 'OPTIONS'])
 def get_status():
 
     #get input JSON
     request_data = request.get_json()
     reportId = request_data['report_id']
-
+       
     query = select([report.c.status]).where(report.c.report_id == reportId)
-    queryResult = connection.execute(query)
+    queryResult = session.execute(query)
+    
     resultSet = queryResult.fetchone()
     resultList = dict(resultSet)
     #resultDict = resultList[0]
-    print(resultList)
-
+    
     #jsonify and return query results
     resultJSON = jsonify(resultList)
+
+    print(resultList)
+
+    session.commit()
+    
     return(resultJSON)
     #return jsonify({"status" : resultSet})
 #end of get_status
