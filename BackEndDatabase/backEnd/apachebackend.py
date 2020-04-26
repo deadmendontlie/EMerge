@@ -31,13 +31,14 @@ metadata = db.MetaData()
 emerRespAgency = db.Table('EmergencyResponseAgency', metadata, autoload=True, autoload_with=engine)
 municipality = db.Table('Municipality', metadata, autoload=True, autoload_with=engine)
 report = db.Table('Report', metadata, autoload=True, autoload_with=engine)
-
+responds = db.Table('Responds', metadata, autoload=True, autoload_with=engine)
 
 
 #retrieves all emergency response agencies for all municipalities
 #receives: GET request
 #returns: JSON array with all responding agencies for all municipalities
-@app.route('/get_all_agency', methods=['GET'])
+@app.route('/get_all_agency', methods=['GET', 'OPTIONS'])
+@cross_origin()
 def get_all_agency():
 
      query = db.select([emerRespAgency])
@@ -47,28 +48,70 @@ def get_all_agency():
      
      resultSet = queryResult.fetchall()
 
-     #resultString = "{" + str([dict((key, value) for key, value in row.items()) for row in resultSet]).strip('[]') + "}"
-     #print(resultString)
+     resultDict = [dict((key, value) for key, value in row.items()) for row in resultSet]
+     
+     resultJSON = jsonify(resultDict)
+     print(resultJSON)
+          
+     return (resultJSON)
+     
+#end get_all_agency()
+
+#retrieves all municipalities
+#receives: GET request
+#returns: JSON array with all municipalities
+@app.route('/get_all_muni', methods=['GET', 'OPTIONS'])
+@cross_origin()
+def get_all_muni():
+
+     query = db.select([municipality])
+     
+     queryResult = session.execute(query)
+     session.commit()
+     
+     resultSet = queryResult.fetchall()
 
      resultDict = [dict((key, value) for key, value in row.items()) for row in resultSet]
      
      resultJSON = jsonify(resultDict)
      print(resultJSON)
-     #for row in resultSet:
-      #    resultDict = dict(row)
-          #print(resultDict)
-     #print("outside loop resulDict = " + str(resultDict))
-
-     #print(" resultDict = " , resultDict)
           
      return (resultJSON)
      
+#end get_all_muni()
 
-#end get_all_agency()
 
+#gets all emergency response agencies assigned to a given report
+#receives: JSON { "report_id" : int<report_id> } via POST
+#returns: JSON array of responding agencies
+@app.route('/get_report_responders', methods={'POST', 'OPTIONS'})
+@cross_origin()
+def get_report_responders():
+
+     req_data = request.get_json()
+          
+     reportId = req_data['report_id']
+
+     print(reportId)
+
+     joinClause = responds.join(emerRespAgency)
+     query = db.select([emerRespAgency]).select_from(joinClause).where(responds.c.report_id == reportId)
+
+     queryResult = session.execute(query)
+     session.commit()
+
+     resultSet = queryResult.fetchall()
+     
+     resultDict = [dict((key, value) for key, value in row.items()) for row in resultSet]
+
+     resultJSON = jsonify(resultDict)
+
+     return(resultJSON)
+
+#end get_report_responders
 
 #updates GPS location for a given report
-#receives: JSON { "report_id" : <int report_id>"GPS" : <String GPS> } via POST
+#receives: JSON { "report_id" : <int report_id>", GPS" : <String GPS> } via POST
 #returns: JSON same as input
 @app.route('/change_report_gps', methods = ['PUT'])
 def change_report_gps():
@@ -136,7 +179,7 @@ def add_report():
 #retrieves report
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON all fields from report row
-@app.route('/get_report', methods=['GET', 'POST', 'OPTIONS'])
+@app.route('/get_report', methods=['POST', 'OPTIONS'])
 @cross_origin()
 def get_report():
 
@@ -172,6 +215,8 @@ def get_report():
 
 
 #add municipality
+#receives JSON: {"GPS_coord" : String<coordinates>, "name" : String<muni name>, "state" : String<state> }
+#returns JSON: { "municipality_id" : int <inserted_primary_key> } 
 @app.route('/add_muni', methods=['PUT', 'OPTIONS'])
 @cross_origin()
 def add_muni():
@@ -194,11 +239,33 @@ def add_muni():
 
 #end add_muni()
 
+#assign report responders
+#receives JSON: {"report_id" : int report_id, "agency_id" : int agency_id }
+#returns JSON: { "response_id" : int <inserted_primary_key> } 
+@app.route('/assign_report_responders', methods=['PUT', 'OPTIONS'])
+@cross_origin()
+def assign_report_responders():
+     #get input JSON
+     request_data = request.get_json()
+
+     reportId = request_data['report_id']
+     agencyId = request_data['agency_id']
+       
+     query = insert(responds).values(report_id = reportId,
+             agency_id = agencyId)
+
+     queryResult = session.execute(query)
+     session.commit()
+
+     return jsonify({"response_id" : queryResult.inserted_primary_key[0]})
+
+#end assign_report_responders
+
 
 #retrieves report
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON all fields from report row
-@app.route('/update_status', methods=['PUT'])
+@app.route('/update_status', methods=['PUT', 'OPTIONS'])
 @cross_origin()
 def update_status():
 
@@ -215,12 +282,13 @@ def update_status():
     #jsonify and return query results
     return jsonify({'status' : str(newStatus)})
 
-#end add_muni()
+#end update_status
 
 #retrieves report status
 #receives: JSON { "report_id" : <int reportId> }
 #returns: JSON field of the status of the desired report
 @app.route('/get_status', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def get_status():
 
     #get input JSON
@@ -243,17 +311,17 @@ def get_status():
     
     return(resultJSON)
     #return jsonify({"status" : resultSet})
+
 #end of get_status
 
-
-
-#testValue
-#return int
-@app.route('/test', methods=['GET'])
+#tests access to flask server
+#recieves: nothing
+#returns: JSON {"test" : String<message>}
+@app.route('/test', methods=['GET', 'OPTIONS'])
+@cross_origin()
 def test():
-    #get test
+    return jsonify({"test" : "Test Success"})
 
-    return jsonify({"test" : 'SHOW EM'})
 #end test
 
 
