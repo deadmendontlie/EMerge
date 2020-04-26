@@ -1,4 +1,5 @@
-18.212.156.43/add_report
+Methods: PUT
+URL: 18.212.156.43/add_report
 
 input JSON:
 

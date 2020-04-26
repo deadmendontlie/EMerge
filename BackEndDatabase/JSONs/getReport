@@ -1,14 +1,13 @@
-18.212.156.43/get_report
+Methods: POST, OPTIONS
+URL: 18.212.156.43/get_report
 
 
 input JSON:
-
 {
-	"report_id" : 1
+    "report_id" : 1
 }
 
-result JSON:
-
+returned JSON:
 {
     "GPS": " 90, 45",
     "message": "Car accident at Focer and Delsea, multiple injiuries, vehicle on fire",

@@ -1,4 +1,5 @@
-http://18.212.156.43/add_muni
+Methods: PUT, OPTIONS
+URL: http://18.212.156.43/add_muni
 
 
 input json:
