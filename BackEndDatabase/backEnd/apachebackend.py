@@ -84,6 +84,7 @@ def get_all_muni():
      
 #end get_all_muni()
 
+
 # Retrieves municipality service agencies for a give municipality
 # Receives: JSON { "municipality_id" : <int> muniId }
 # Returns: JSON array of the agencyID, serviceType, and name of municipality
@@ -109,6 +110,7 @@ def get_all_muni_services():
      return (resultJSON)
 
 #end of get_all_muni_services
+
 
 #get_muni_reports
 #get all the reports of a municipality by the municipality_id
@@ -136,6 +138,7 @@ def get_muni_reports():
     return(resultJSON)
 
 #end get_muni_reports
+
 
 #gets all emergency response agencies assigned to a given report
 #receives: JSON { "report_id" : int<report_id> } via POST
@@ -308,11 +311,13 @@ def add_muni():
      coordinates = request_data['GPS_coord']
      muniName = request_data['name']
      muniState = request_data['state']
+     muniEmail = request_data['email']
 
         
      query = insert(municipality).values(GPS_coord = coordinates,
              name = muniName,
-             state = muniState)
+             state = muniState,
+             email = muniEmail)
 
      queryResult = session.execute(query)
      session.commit()
