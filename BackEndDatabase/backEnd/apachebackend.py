@@ -84,6 +84,58 @@ def get_all_muni():
      
 #end get_all_muni()
 
+# Retrieves municipality service agencies for a give municipality
+# Receives: JSON { "municipality_id" : <int> muniId }
+# Returns: JSON array of the agencyID, serviceType, and name of municipality
+# for all emergency response agencies for a given municipality
+@app.route('/get_all_muni_services', methods=['POST', 'OPTIONS'])
+def get_all_muni_services():
+
+     #get input JSON 
+     request_data = request.get_json()
+     muniId = request_data['municipality_id']
+     
+     query = db.select([emerRespAgency]).where(emerRespAgency.c.municipality_id == muniId)
+
+     queryResult = session.execute(query)
+     session.commit()
+     
+     resultSet = queryResult.fetchall()
+
+     resultDict = [dict((key, value) for key, value in row.items()) for row in resultSet]
+     
+     resultJSON = jsonify(resultDict)
+          
+     return (resultJSON)
+
+#end of get_all_muni_services
+
+#get_muni_reports
+#get all the reports of a municipality by the municipality_id
+#returns a list of reports based on the inputted municipality_id
+@app.route('/get_muni_reports', methods=['POST', 'OPTIONS'])
+@cross_origin()
+def get_muni_reports():
+
+    #get municipality_id
+    request_data = request.get_json()
+    muni_id = request_data['municipality_id']
+
+    #create query for all reports of a municipality
+    query = db.select([report]).where(report.c.municipality_id == muni_id)
+    queryResult = session.execute(query)
+    session.commit()
+
+    #get result
+    resultSet = queryResult.fetchall()
+
+    #convert result into a list
+    resultDict = [dict((row, column) for row, column in row.items()) for row in resultSet]
+
+    resultJSON = jsonify(resultDict)
+    return(resultJSON)
+
+#end get_muni_reports
 
 #gets all emergency response agencies assigned to a given report
 #receives: JSON { "report_id" : int<report_id> } via POST
