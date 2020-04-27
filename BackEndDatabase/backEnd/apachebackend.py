@@ -8,6 +8,11 @@ import sqlalchemy as db
 from sqlalchemy.orm import sessionmaker
 import json
 
+import importlib
+module = "findClosestMuni"
+importlib.import_module(module)
+from findClosestMuni import getMunis
+
 app = Flask(__name__)
 CORS(app)
 
@@ -74,7 +79,6 @@ def get_all_muni():
      resultDict = [dict((key, value) for key, value in row.items()) for row in resultSet]
      
      resultJSON = jsonify(resultDict)
-     print(resultJSON)
           
      return (resultJSON)
      
@@ -149,7 +153,8 @@ def add_report():
      reportPhone = req_data['phone']
      reportPhoto = req_data['photo']
      reportMessage = req_data['message']
-     reportMunicipalityId = 1#this is a stub currently; place function to assign muni from gps coord here
+     # Assign report to closest municipality based on GPS coordinates
+     reportMunicipalityId = assign_report_to_muni(reportGPS)
      reportLevel = req_data['report_level']
      reportType = req_data['report_type']
     
@@ -174,6 +179,31 @@ def add_report():
      return jsonify({"report_id" : queryResult.inserted_primary_key[0]})
 
 #end add_report()
+
+
+#adds a new emergency response service
+#receives: JSON { "agency_id" : <int agency_id>,"service_type" : <String service_type>, "name" : <String name>, "municipality_id" : <String municipality_id>,
+#returns: JSON with municipality_id of inserted service
+@app.route('/add_emer_service', methods = ['PUT', 'OPTIONS'])
+@cross_origin()
+def add_emer_service ():
+     req_data = request.get_json()
+
+     #reportNum = req_data['report_id'] ####this should be autofilled and gotten from mySQL
+
+     serviceType = req_data['service_type']
+     EmName = req_data['name']
+     muniId = req_data['municipality_id']
+
+     query = emerRespAgency.insert().values(service_type=serviceType, name = EmName, municipality_id = muniId)
+
+
+     queryResult = session.execute(query)
+     session.commit()
+
+     return jsonify({"Agency ID" : queryResult.inserted_primary_key[0]})
+
+#end add_emer_service()
 
 
 #retrieves report
@@ -324,6 +354,17 @@ def test():
 
 #end test
 
+
+# Provids closest municipality to report GPS
+#receives: String<GPS coordinate of report> format: "Lat: xx.xxxxxxx, Long: xxx.xxxxx"
+#returns: int<municipality_id of closest municipality
+def assign_report_to_muni(reportGPS):
+     munis = get_all_muni().get_json()
+     closestMuni = getMunis(munis, reportGPS)
+
+     return(closestMuni)
+
+#end assign_report_to_muni
 
 
 if __name__ == '__main__':
