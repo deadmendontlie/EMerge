@@ -4,14 +4,14 @@ URL: http://18.212.156.43/add_muni
 
 input json:
 {
-	"name" : "Atlantic City",
-	"state" : "NJ",
-	"GPS_coord" : "Lat: 39.3765899, Long: -74.5228634"
+	"name" : "București",
+	"state" : "RO",
+	"GPS_coord" : "Lat: 44.4377401, Long: 25.9545526",
+	"email" : "bucureștiro@emerge.com"
 }
-
 
 
 return json:
 {
-    "municipality_id": 8
+    "municipality_id": 15
 }
