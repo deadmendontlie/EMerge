@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -81,6 +82,7 @@ class StartScreen extends StatelessWidget {
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
+                                    _timer(0);
                                   }
                                 });
                               } else {
@@ -120,6 +122,7 @@ class StartScreen extends StatelessWidget {
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
+                                    _timer(0);
                                   }
                                 });
                               } else {
@@ -163,6 +166,7 @@ class StartScreen extends StatelessWidget {
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
+                                    _timer(0);
                                   }
                                 });
                               } else {
@@ -202,6 +206,7 @@ class StartScreen extends StatelessWidget {
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
+                                    _timer(0);
                                   }
                                 });
                               } else {
@@ -245,6 +250,7 @@ class StartScreen extends StatelessWidget {
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
+                                    _timer(0);
                                   }
                                 });
                               } else {
@@ -282,6 +288,7 @@ class StartScreen extends StatelessWidget {
                                   if (finalReportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + finalReportID.toString());
+                                    _timer(1);
                                   }
                                 });
                               } else {
@@ -447,26 +454,20 @@ Future<String> _fetchStatus(int id) async {
 
 //TODO Add the timer, start the timer once an emergency report is submitted, also have it auto check for status changes everytime, and start updateGPS every time timer is done and restarted
 //TODO Do not do update gps unless it is an emergency report only enforce the check for status changes
-void _updategps(int id) async {
-  final reportStatus = await _fetchStatus(id);
-  if (reportStatus != 'Closed') {
-    final location = await _getLocation();
-    var value = {"report_id": id, "GPS": location.toString()};
-    final Json = json.encode(value);
-    final response = await http.put('http://18.212.156.43:80/change_report_gps',
-        headers: {
-          "content-type": "application/json",
-          "accept": "application/json",
-        },
-        body: Json);
-    if (response.statusCode == 200) {
-      print('It worked');
-    } else {
-      throw Exception('Failed to update gps');
-    }
+Future<void> _updategps(int id) async {
+  final location = await _getLocation();
+  var value = {"report_id": id, "GPS": location.toString()};
+  final Json = json.encode(value);
+  final response = await http.put('http://18.212.156.43:80/change_report_gps',
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+      body: Json);
+  if (response.statusCode == 200) {
+    print('It worked');
   } else {
-    _resetFile();
-    throw Exception('No active report');
+    throw Exception('Failed to update gps');
   }
 }
 
@@ -568,4 +569,22 @@ Future<int> _getReportID() async {
 void _resetFile() async {
   File temp = await _localFile;
   temp.writeAsStringSync('reportID:-1');
+}
+
+void _timer(int value) async {
+  int reportID = await _getReportID();
+  String status;
+  Timer timerMin = new Timer.periodic(new Duration(minutes: 1), (time) async {
+    print('1 Min up');
+    status = await _fetchStatus(reportID);
+    print(status);
+    if (status == 'Closed') {
+      print('should be cancelled');
+      time.cancel();
+      _writeDataToFile('reportID:-1');
+    } else if (value == 1) {
+      print('Update Gps');
+      _updategps(reportID);
+    }
+  });
 }

@@ -12,7 +12,7 @@ class TipsPage extends StatefulWidget {
 }
 
 class _TipsPageWidgetState extends State<TipsPage> {
-  Position userLocation;
+  Position _userLocation;
   @override
   initState() {
     super.initState();
@@ -47,11 +47,17 @@ class _TipsPageWidgetState extends State<TipsPage> {
               //TODO Remove the dialog at the end when this is done
               Text(
                 "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               DropdownButton<String>(
                 //Service drop down
-                hint: Text('Please Choose One',style: TextStyle(color: Colors.white),),
+                hint: Text(
+                  'Please Choose One',
+                  style: TextStyle(color: Colors.white),
+                ),
 
                 items: <String>[
                   'None',
@@ -75,7 +81,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
               ),
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerName,
@@ -90,7 +99,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter your name"),
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
                   WhitelistingTextInputFormatter(new RegExp(
@@ -100,7 +112,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
               ),
               Text(
                 "Please submit your phone number(Not required)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerNumber,
@@ -116,7 +131,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter phone number"),
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(14),
                   WhitelistingTextInputFormatter.digitsOnly,
@@ -125,7 +143,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
               ),
               Text(
                 "Enter what you would like to report for the tip.",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerAdditionalInformation,
@@ -140,7 +161,10 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Tip Information (256 max)"),
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
                   WhitelistingTextInputFormatter(new RegExp(
@@ -149,17 +173,14 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ],
               ),
               Center(
-                child: RaisedButton(padding: new EdgeInsets.all(20.0),
+                child: RaisedButton(
+                  padding: new EdgeInsets.all(20.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(20.0),
                       side: BorderSide(color: Colors.red)),
                   child: Text('Submit'),
-                  onPressed: () {
-                    _getLocation().then((value) {
-                      setState(() {
-                        userLocation = value;
-                      });
-                    });
+                  onPressed: () async {
+                    _userLocation = await _getLocation() as Position;
                     String encodeName;
                     String encodeNumber;
                     String encodedAdditional;
@@ -213,7 +234,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     } else {
                       encodedAdditional = 'N/A';
                     }
-                    encodedLocation = userLocation.toString();
+                    encodedLocation = _userLocation.toString();
                     var values = {
                       "timestamp": encodedDateTime,
                       "required_responders": encodedService,

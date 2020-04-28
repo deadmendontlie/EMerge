@@ -13,7 +13,7 @@ class FirePage extends StatefulWidget {
 }
 
 class _FirePageWidgetState extends State<FirePage> {
-  Position userLocation;
+  Position _userLocation;
   @override
   initState() {
     super.initState();
@@ -49,11 +49,17 @@ class _FirePageWidgetState extends State<FirePage> {
               //TODO Remove the dialog at the end when this is done
               Text(
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               DropdownButton<String>(
                 //Service drop down
-                hint: Text('Please Choose One',style: TextStyle(color: Colors.white),),
+                hint: Text(
+                  'Please Choose One',
+                  style: TextStyle(color: Colors.white),
+                ),
                 items: <String>[
                   'None',
                   'Medical',
@@ -73,11 +79,20 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Text(
                 "Please Select Type of Report",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               DropdownButton<String>(
                 //report drop down
-                hint: Text('No report type is selected', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),),
+                hint: Text(
+                  'No report type is selected',
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white),
+                ),
 
                 items: <String>['Fire', 'Gas Leak', 'Figure out more']
                     .map((String value) {
@@ -94,7 +109,10 @@ class _FirePageWidgetState extends State<FirePage> {
               ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerName,
@@ -119,7 +137,10 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Text(
                 "Please submit your phone number(Not required)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color:Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerNumber,
@@ -144,7 +165,10 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Text(
                 "Enter any additional information below",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerAdditionalInformation,
@@ -174,12 +198,8 @@ class _FirePageWidgetState extends State<FirePage> {
                       borderRadius: new BorderRadius.circular(20.0),
                       side: BorderSide(color: Colors.red)),
                   child: Text('Submit'),
-                  onPressed: () {
-                    _getLocation().then((value) {
-                      setState(() {
-                        userLocation = value;
-                      });
-                    });
+                  onPressed: () async {
+                    _userLocation = await _getLocation() as Position;
                     String encodeName;
                     String encodeNumber;
                     String encodedAdditional;
@@ -243,7 +263,7 @@ class _FirePageWidgetState extends State<FirePage> {
                       encodedAdditional = 'N/A';
                     }
                     encodedReport = _report;
-                    encodedLocation = userLocation.toString();
+                    encodedLocation = _userLocation.toString();
                     var values = {
                       "timestamp": encodedDateTime,
                       "required_responders": encodedService,
