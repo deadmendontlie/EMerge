@@ -62,6 +62,7 @@ def get_all_agency():
      
 #end get_all_agency()
 
+
 #retrieves all municipalities
 #receives: GET request
 #returns: JSON array with all municipalities
@@ -84,6 +85,38 @@ def get_all_muni():
      
 #end get_all_muni()
 
+
+#retrieves municipality using email address
+#receives: POST JSON: { "email" : <String> emailAddress}
+#returns: JSON array with all municipalities
+@app.route('/get_muni_by_email', methods=['POST', 'OPTIONS'])
+@cross_origin()
+def get_muni_by_email():
+
+     #get input JSON 
+     request_data = request.get_json()
+     muniEmail = request_data['email']
+
+     db.select([municipality]).where(municipality.c.email == muniEmail)
+     query = db.select([municipality])
+     
+     queryResult = session.execute(query)
+     session.commit()
+     
+     resultSet = queryResult.fetchall()
+
+     #convert result row set to list
+     resultList = [dict(row) for row in resultSet]
+
+     #convert result list to dictionary and store municipality_id
+     resultDict = resultList[0]
+
+     #jsonifiy and return query results
+     resultJSON = jsonify(resultDict)
+
+     return(resultJSON)
+     
+#end get_all_muni()
 
 # Retrieves municipality service agencies for a give municipality
 # Receives: JSON { "municipality_id" : <int> muniId }
@@ -284,11 +317,9 @@ def get_report():
 
      #convert result row set to list
      resultList = [dict(row) for row in resultSet]
-     #print(resultList)
 
      #convert result list to dictionary
      resultDict = resultList[0]
-     #print(resultDict)
 
      #jsonifiy and return query results
      resultJSON = jsonify(resultDict)
