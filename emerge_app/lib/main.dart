@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -34,6 +35,8 @@ class MyApp extends StatelessWidget {
       '/FirePage': (context) => FirePage(),
       '/TipsPage': (context) => TipsPage(),
       '/NonEmergenciesPage': (context) => NonEmergenciesPage(),
+
+      //'/timer':(context) => timer();
     });
   }
 }
@@ -43,266 +46,353 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     _localFile;
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Start Screen'),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Center(
-              child: RaisedButton(
-                child: Text('Medical'),
-                onPressed: () {
-                  //Returns a value currently when the function ends
-                  _getReportID().then((reportID) {
-                    if (reportID == -1) {
-                      _navigateToMedicalPage(context).then((newReportID) {
-                        int reportID = newReportID;
-                        //print(reportID);
-                        if (reportID != -1 && reportID != null) {
-                          _writeDataToFile('reportID:' + reportID.toString());
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text(
-                                'You cannot have more then one active report.'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Police'),
-                onPressed: () {
-                  //Returns a value currently when the function ends
-                  _getReportID().then((reportID) {
-                    if (reportID == -1) {
-                      _navigateToPolicePage(context).then((newReportID) {
-                        int reportID = newReportID;
-                        //print(reportID);
-                        if (reportID != -1 && reportID != null) {
-                          _writeDataToFile('reportID:' + reportID.toString());
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text(
-                                'You cannot have more then one active report.'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Fire'),
-                onPressed: () {
-                  //Returns a value currently when the function ends
-                  _getReportID().then((reportID) {
-                    if (reportID == -1) {
-                      _navigateToFirePage(context).then((newReportID) {
-                        int reportID = newReportID;
-                        //print(reportID);
-                        if (reportID != -1 && reportID != null) {
-                          _writeDataToFile('reportID:' + reportID.toString());
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text(
-                                'You cannot have more then one active report.'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Tips'),
-                onPressed: () {
-                  //Returns a value currently when the function ends
-                  _getReportID().then((reportID) {
-                    if (reportID == -1) {
-                      _navigateToTipsPage(context).then((newReportID) {
-                        int reportID = newReportID;
-                        //print(reportID);
-                        if (reportID != -1 && reportID != null) {
-                          _writeDataToFile('reportID:' + reportID.toString());
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text(
-                                'You cannot have more then one active report.'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Non-Emergencies'),
-                onPressed: () {
-                  //Returns a value currently when the function ends
-                  _getReportID().then((reportID) {
-                    if (reportID == -1) {
-                      _navigateToNonEmergenciesPage(context)
-                          .then((newReportID) {
-                        int reportID = newReportID;
-                        //print(reportID);
-                        if (reportID != -1 && reportID != null) {
-                          _writeDataToFile('reportID:' + reportID.toString());
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text(
-                                'You cannot have more then one active report.'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Emergency'),
-                onPressed: () {
-                  _getReportID().then((reportID) {
-                    if (reportID == -1) {
-                      _postEmergency().then((newReportID) {
-                        int finalReportID = newReportID;
-                        //print(finalReportID);
-                        if (finalReportID != -1 && reportID != null) {
-                          _writeDataToFile(
-                              'reportID:' + finalReportID.toString());
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text(
-                                'You cannot have more then one active report.'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                },
-              ),
-            ),
-            Center(
-              child: RaisedButton(
-                child: Text('Report Status'),
-                onPressed: () {
-                  _getReportID().then((reportID) {
-                    int tempID = reportID;
-                    //print(tempID);
-                    if (tempID != -1) {
-                      _fetchStatus(tempID).then((reportStatus) {
-                        String currentReportStatus = reportStatus;
-                        //print(currentReportStatus);
-                        if (currentReportStatus != 'Closed') {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                // Retrieve the text the user has entered by using the
-                                // TextEditingController.
-                                content: Text(
-                                    'Report Status is ' + currentReportStatus),
-                              );
-                            },
-                          );
-                        } else {
-                          if (tempID != -1) {
-                            _resetFile();
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  // Retrieve the text the user has entered by using the
-                                  // TextEditingController.
-                                  content: Text(
-                                      'Your report was closed and or solved'),
+      backgroundColor: Color(0xFF2d3447),
+      appBar: AppBar(
+        title: Text('Start Screen'),
+        backgroundColor: Color(0xFF2D3439),
+      ),
+      body: Container(
+        child: Row(children: <Widget>[
+          Expanded(
+            flex: 2,
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      SizedBox(width: 55),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Medical',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToMedicalPage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
                                 );
-                              },
-                            );
-                          }
-                        }
-                      });
-                    } else {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            // Retrieve the text the user has entered by using the
-                            // TextEditingController.
-                            content: Text('You have no active reports'),
-                          );
-                        },
-                      );
-                    }
-                  });
-                }, //On pressed
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 80),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.blue)),
+                          child: new Text('Police',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToPolicePage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 70),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          child: new Text('Fire',
+                              style: new TextStyle(fontSize: 20.0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToFirePage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 100, height: 100),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.green)),
+                          child: new Text('Tips',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToTipsPage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 30),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text(' \t \t \t \t Non \n Emergencies',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToNonEmergenciesPage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Emergencies',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _postEmergency().then((newReportID) {
+                                  int finalReportID = newReportID;
+                                  //print(finalReportID);
+                                  if (finalReportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + finalReportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 30, height: 100),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Report Status',
+                              style: new TextStyle(fontSize: 20.0)),
+
+                          onPressed: () {
+                            _getReportID().then((reportID) {
+                              int tempID = reportID;
+                              //print(tempID);
+                              if (tempID != -1) {
+                                _fetchStatus(tempID).then((reportStatus) {
+                                  String currentReportStatus = reportStatus;
+                                  //print(currentReportStatus);
+                                  if (currentReportStatus != 'Closed') {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          // Retrieve the text the user has entered by using the
+                                          // TextEditingController.
+                                          content: Text('Report Status is ' +
+                                              currentReportStatus),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    if (tempID != -1) {
+                                      _resetFile();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            // Retrieve the text the user has entered by using the
+                                            // TextEditingController.
+                                            content: Text(
+                                                'Your report was closed and or solved'),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content:
+                                          Text('You have no active reports'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          }, //On pressed
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Reset button ',
+                              style: new TextStyle(fontSize: 20.0)),
+
+                          onPressed: () {
+                            _resetFile();
+                          }, //On pressed
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            Center(
-              child: RaisedButton(
-                child: Text(
-                    'Reset button THIS NEEDES TO BE REMOVED IN THE FINAL PRODUCT'),
-                onPressed: () {
-                  _resetFile();
-                }, //On pressed
-              ),
-            ),
-          ],
-        ));
+          ),
+        ]),
+      ),
+    );
   }
 
   Future<int> _navigateToMedicalPage(BuildContext context) async {

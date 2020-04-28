@@ -28,8 +28,10 @@ class _PolicePageWidgetState extends State<PolicePage> {
     final myControllerAdditionalInformation = TextEditingController();
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Color(0xFF2d3447),
         appBar: AppBar(
           title: Text('Police Report'),
+          backgroundColor: Color(0xFF2D3439),
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             tooltip: 'Back',
@@ -46,10 +48,10 @@ class _PolicePageWidgetState extends State<PolicePage> {
               //TODO Remove the dialog at the end when this is done
               Text(
                 "Please Select What Services are Required as well(Defaults to Just Police)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               DropdownButton<String>(
-                hint: Text('Please Choose One'),
+                hint: Text('Please Choose One',style: TextStyle(color: Colors.white),),
                 items: <String>['None', 'Fire', 'Medical', 'Medical and Fire']
                     .map((String value) {
                   return new DropdownMenuItem<String>(
@@ -65,17 +67,19 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 value: _service,
               ), //DropdownButton
               Text(
-                "Please Select Type of Report",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                "Please Select Type of Report",style: TextStyle(color: Colors.white),
+
               ),
               DropdownButton<String>(
-                hint: Text('No report type is selected'),
+
+                hint: Text('No report type is selected',style: TextStyle(color: Colors.white),),
                 items: <String>['Shooting', 'Assault'].map((String value) {
                   return new DropdownMenuItem<String>(
                     value: value,
                     child: new Text(value),
                   );
                 }).toList(),
+
                 onChanged: (String changed) {
                   _report = changed;
                   setState(() {});
@@ -84,7 +88,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
               ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerName,
@@ -99,6 +103,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter your name"),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
                   WhitelistingTextInputFormatter(new RegExp(
@@ -108,7 +113,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
               ),
               Text(
                 "Please submit your phone number(Not required)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerNumber,
@@ -124,6 +129,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter phone number"),
+                  style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(14),
                   WhitelistingTextInputFormatter.digitsOnly,
@@ -132,7 +138,7 @@ class _PolicePageWidgetState extends State<PolicePage> {
               ),
               Text(
                 "Enter any additional information below",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerAdditionalInformation,
@@ -147,6 +153,8 @@ class _PolicePageWidgetState extends State<PolicePage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Enter any other information (256 max)"),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
                   WhitelistingTextInputFormatter(new RegExp(

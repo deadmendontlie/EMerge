@@ -29,8 +29,10 @@ class _FirePageWidgetState extends State<FirePage> {
     final myControllerAdditionalInformation = TextEditingController();
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: Color(0xFF2d3447),
         appBar: AppBar(
           title: Text('Fire Page'),
+          backgroundColor: Color(0xFF2D3439),
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             tooltip: 'Back',
@@ -47,11 +49,11 @@ class _FirePageWidgetState extends State<FirePage> {
               //TODO Remove the dialog at the end when this is done
               Text(
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               DropdownButton<String>(
                 //Service drop down
-                hint: Text('Please Choose One'),
+                hint: Text('Please Choose One',style: TextStyle(color: Colors.white),),
                 items: <String>[
                   'None',
                   'Medical',
@@ -71,11 +73,12 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Text(
                 "Please Select Type of Report",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               DropdownButton<String>(
                 //report drop down
-                hint: Text('No report type is selected'),
+                hint: Text('No report type is selected', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),),
+
                 items: <String>['Fire', 'Gas Leak', 'Figure out more']
                     .map((String value) {
                   return new DropdownMenuItem<String>(
@@ -91,7 +94,7 @@ class _FirePageWidgetState extends State<FirePage> {
               ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerName,
@@ -106,6 +109,7 @@ class _FirePageWidgetState extends State<FirePage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter your name"),
+                style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
                   WhitelistingTextInputFormatter(new RegExp(
@@ -115,7 +119,7 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Text(
                 "Please submit your phone number(Not required)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color:Colors.white),
               ),
               TextFormField(
                 controller: myControllerNumber,
@@ -131,6 +135,7 @@ class _FirePageWidgetState extends State<FirePage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter phone number"),
+                style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(14),
                   WhitelistingTextInputFormatter.digitsOnly,
@@ -139,7 +144,7 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Text(
                 "Enter any additional information below",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerAdditionalInformation,
@@ -154,6 +159,7 @@ class _FirePageWidgetState extends State<FirePage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Enter any other information (256 max)"),
+                style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
                   WhitelistingTextInputFormatter(new RegExp(
@@ -163,6 +169,10 @@ class _FirePageWidgetState extends State<FirePage> {
               ),
               Center(
                 child: RaisedButton(
+                  padding: new EdgeInsets.all(20.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20.0),
+                      side: BorderSide(color: Colors.red)),
                   child: Text('Submit'),
                   onPressed: () {
                     _getLocation().then((value) {
