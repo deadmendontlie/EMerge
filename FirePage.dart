@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,12 +7,12 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class TipsPage extends StatefulWidget {
+class FirePage extends StatefulWidget {
   @override
-  _TipsPageWidgetState createState() => _TipsPageWidgetState();
+  _FirePageWidgetState createState() => _FirePageWidgetState();
 }
 
-class _TipsPageWidgetState extends State<TipsPage> {
+class _FirePageWidgetState extends State<FirePage> {
   Position userLocation;
   @override
   initState() {
@@ -20,6 +21,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
 
   int _reportID;
   String _service; //service selected in the drop down
+  String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
     final myControllerName = TextEditingController();
@@ -29,7 +31,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
       home: Scaffold(
         backgroundColor: Color(0xFF2d3447),
         appBar: AppBar(
-          title: Text('Tips'),
+          title: Text('Fire Page'),
           backgroundColor: Color(0xFF2D3439),
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios),
@@ -46,20 +48,16 @@ class _TipsPageWidgetState extends State<TipsPage> {
               //TODO add a verification pop up before they submit the report
               //TODO Remove the dialog at the end when this is done
               Text(
-                "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
+                "Please Select What Services are Required as well(Defaults to Just Fire)",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               DropdownButton<String>(
                 //Service drop down
                 hint: Text('Please Choose One',style: TextStyle(color: Colors.white),),
-
                 items: <String>[
                   'None',
                   'Medical',
                   'Police',
-                  'Fire',
-                  'Fire and Medical',
-                  'Fire and Police',
                   'Medical and Police'
                 ].map((String value) {
                   return new DropdownMenuItem<String>(
@@ -73,6 +71,27 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 },
                 value: _service,
               ),
+              Text(
+                "Please Select Type of Report",
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+              ),
+              DropdownButton<String>(
+                //report drop down
+                hint: Text('No report type is selected', style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),),
+
+                items: <String>['Fire', 'Gas Leak', 'Figure out more']
+                    .map((String value) {
+                  return new DropdownMenuItem<String>(
+                    value: value,
+                    child: new Text(value),
+                  );
+                }).toList(),
+                onChanged: (String changed) {
+                  _report = changed;
+                  setState(() {});
+                },
+                value: _report,
+              ), //DropdownButton
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
@@ -90,17 +109,17 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter your name"),
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
                   WhitelistingTextInputFormatter(new RegExp(
-                      '[A-Za-z\\s]')), //This will allow for letters only
-                  //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
+                      '[A-Za-z\\s]')), //This will allow for letters and periods
+                  //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
                 ],
               ),
               Text(
                 "Please submit your phone number(Not required)",
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color:Colors.white),
               ),
               TextFormField(
                 controller: myControllerNumber,
@@ -116,7 +135,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ),
                 decoration: new InputDecoration.collapsed(
                     hintText: "Please enter phone number"),
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(14),
                   WhitelistingTextInputFormatter.digitsOnly,
@@ -124,7 +143,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                 ],
               ),
               Text(
-                "Enter what you would like to report for the tip.",
+                "Enter any additional information below",
                 style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
               ),
               TextFormField(
@@ -139,17 +158,18 @@ class _TipsPageWidgetState extends State<TipsPage> {
                   paste: false,
                 ),
                 decoration: new InputDecoration.collapsed(
-                    hintText: "Tip Information (256 max)"),
-                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.normal,color: Colors.white),
+                    hintText: "Enter any other information (256 max)"),
+                style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
                   WhitelistingTextInputFormatter(new RegExp(
                       '[A-Za-z\\.\\s]')), //This will allow for letters and periods
-                  //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
+                  //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
                 ],
               ),
               Center(
-                child: RaisedButton(padding: new EdgeInsets.all(20.0),
+                child: RaisedButton(
+                  padding: new EdgeInsets.all(20.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(20.0),
                       side: BorderSide(color: Colors.red)),
@@ -164,6 +184,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     String encodeNumber;
                     String encodedAdditional;
                     String encodedService;
+                    String encodedReport;
                     String encodedLocation;
                     String encodedDateTime;
                     DateTime now = DateTime.now();
@@ -171,17 +192,13 @@ class _TipsPageWidgetState extends State<TipsPage> {
                         DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
                     if (_service != null) {
                       if (_service == 'None') {
-                        encodedService = "FPH";
+                        encodedService = "F";
                       } else if (_service == 'Medical') {
-                        encodedService = "H";
-                      } else if (_service == 'Police') {
-                        encodedService = "P";
-                      } else if (_service == 'Medical and Police') {
-                        encodedService = "PH";
-                      } else if (_service == 'Fire and Police') {
-                        encodedService = "FP";
-                      } else if (_service == 'Fire and Medical') {
                         encodedService = "FH";
+                      } else if (_service == 'Police') {
+                        encodedService = "FP";
+                      } else if (_service == 'Medical and Police') {
+                        encodedService = "FPH";
                       }
                     } else {
                       return showDialog(
@@ -191,6 +208,18 @@ class _TipsPageWidgetState extends State<TipsPage> {
                             // Retrieve the text the user has entered by using the
                             // TextEditingController.
                             content: Text('Please select a service required'),
+                          );
+                        },
+                      );
+                    }
+                    if (_report == null) {
+                      return showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            // Retrieve the text the user has entered by using the
+                            // TextEditingController.
+                            content: Text('Please select a report type'),
                           );
                         },
                       );
@@ -213,6 +242,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                     } else {
                       encodedAdditional = 'N/A';
                     }
+                    encodedReport = _report;
                     encodedLocation = userLocation.toString();
                     var values = {
                       "timestamp": encodedDateTime,
@@ -224,8 +254,8 @@ class _TipsPageWidgetState extends State<TipsPage> {
                       "phone": encodeNumber,
                       "photo": null,
                       "message": encodedAdditional,
-                      "report_level": "Tip",
-                      "report_type": "N/A"
+                      "report_level": "Emergency",
+                      "report_type": encodedReport
                     };
                     final Json = json.encode(values);
                     _postReport(Json).then((reportIDValue) {
@@ -243,6 +273,7 @@ class _TipsPageWidgetState extends State<TipsPage> {
                         );
                       },
                     );
+                    // Add Submission results later
                   },
                 ),
               ),

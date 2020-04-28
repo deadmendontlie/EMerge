@@ -1,435 +1,571 @@
-import 'package:image_picker/image_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'customicons.dart';
-import 'data.dart';
-import 'dart:math';
+import 'dart:convert';
 import 'dart:io';
-import 'dart:async';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:queries/collections.dart';
-import 'package:enumerable/enumerable.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+
+import 'FirePage.dart';
+import 'MedicalPage.dart';
+import 'NonEmergenciesPage.dart';
+import 'PolicePage.dart';
+import 'TipsPage.dart';
 
 void main() {
+  _resetFile();
   runApp(MaterialApp(
     home: MyApp(),
     debugShowCheckedModeBanner: false,
   ));
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
   @override
-  _MyAppState createState() => new _MyAppState();
+  Widget build(BuildContext context) {
+    return MaterialApp(title: 'Flutter', initialRoute: '/', routes: {
+      //starting page
+      '/': (context) => StartScreen(),
+      //other pages
+      '/MedicalPage': (context) => MedicalPage(),
+      '/PolicePage': (context) => PolicePage(),
+      '/FirePage': (context) => FirePage(),
+      '/TipsPage': (context) => TipsPage(),
+      '/NonEmergenciesPage': (context) => NonEmergenciesPage(),
+
+      //'/timer':(context) => timer();
+    });
+  }
 }
 
-//ratio of the cards
-var cardAspectRatio = 12.0 / 16.0;
-var widgetAspectRatio = cardAspectRatio * 1.2;
-
-class _MyAppState extends State<MyApp> {
-  //permission status
-  PermissionStatus _status;
-  //Gallery and Camera
-  File imageFile;
-  _detect(BuildContext context) async{
-    print(imageFile);
-    FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(imageFile);
-    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-
-    List<ImageLabel> labels = await labeler.processImage(visionImage);
-
-    for (ImageLabel label in labels) {
-      final String text = label.text;
-      final String entityId = label.entityId;
-      final double confidence = label.confidence;
-      print(text);
-      print(entityId);
-      print(confidence);
-    }
-
-
-
-  }
-
-  //gallery and camera perms and picking
-  _openGallery(BuildContext context) async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
-    this.setState(() {
-      imageFile = picture;
-    });
-    Navigator.of(context).pop();
-  }//open photo gallery
-  _openCamera(BuildContext context) async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.camera);
-    this.setState(() {
-      imageFile = picture;
-    });
-    Navigator.of(context).pop();
-  }//open camera
-  @override
-  void initState() {
-    super.initState();
-    PermissionHandler()
-        .checkPermissionStatus(PermissionGroup.locationWhenInUse)
-        .then(_updateStatus);
-  }//checks perms
-
-  /*
-  Pick Camera or roll dialog
-   */
-  Future<void> _showChoiceDialog(BuildContext context) {
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Make a choice'),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  GestureDetector(
-                    child: Text("gallary"),
-                    onTap: () {
-                      _askPermission(1);
-                      _openGallery(context);
-                    },
-                  ),
-                  Padding(padding: EdgeInsets.all(8.0)),
-                  GestureDetector(
-                    child: Text("camera"),
-                    onTap: () {
-                      _askPermission(2);
-                      _openCamera(context);
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
-
-
-  var currentPage = listOfPictures.distinct().toList().length - 1.0;
-
+class StartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    //PageController controller = PageController(initialPage: images.length - 1);
-    PageController controller = PageController(
-        initialPage: listOfPictures.distinct().toList().length - 1);
-    controller.addListener(() {
-      setState(() {
-        currentPage = controller.page;
-      });
-    });
-/*
-return SafeArea()
-*/
+    _localFile;
     return Scaffold(
-      //change background color
       backgroundColor: Color(0xFF2d3447),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(
-                  //move to position
-                  left: 12.0,
-                  right: 12.0,
-                  top: 30.0,
-                  bottom: 8.0),
-              child: Row(
-                  //here xxxxxxxx here
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        //menu
-                        CustomIcons.menu,
-                        color: Colors.white,
-                        size: 30.0,
-                      ),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        //search
-                        Icons.search,
-                        color: Colors.white,
-                        size: 30.0,
-                      ),
-                      onPressed: () {},
-                    )
-                  ]),
-            ),
-            //text Stuff for "take pic"
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      appBar: AppBar(
+        title: Text('Start Screen'),
+        backgroundColor: Color(0xFF2D3439),
+      ),
+      body: Container(
+        child: Row(children: <Widget>[
+          Expanded(
+            flex: 2,
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text("Take Picture",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 46.0,
-                        fontFamily: "Calibre-Semibold",
-                        letterSpacing: 1.0,
-                      )),
-                  IconButton(
-                    icon: Icon(
-                      Icons.camera,
-                      size: 40.0,
-                      color: Colors.purpleAccent,
-                    ),
-                    onPressed: () {
-                      _showChoiceDialog(context);
-                    },
-                  )
-                ],
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFff6e6e),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 22.0, vertical: 6.0),
-                        child: Text(
-                          "Raw Pictures",
-                          style: TextStyle(color: Colors.white),
+                  Row(
+                    children: [
+                      SizedBox(width: 55),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Medical',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToMedicalPage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
                         ),
                       ),
-                    ),
+                      SizedBox(width: 80),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.blue)),
+                          child: new Text('Police',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToPolicePage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    width: 15.0,
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 70),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          child: new Text('Fire',
+                              style: new TextStyle(fontSize: 20.0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToFirePage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 100, height: 100),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.green)),
+                          child: new Text('Tips',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToTipsPage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  Text("+5 Pictures",
-                      style: TextStyle(color: Colors.blueAccent))
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 30),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text(' \t \t \t \t Non \n Emergencies',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            //Returns a value currently when the function ends
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _navigateToNonEmergenciesPage(context)
+                                    .then((newReportID) {
+                                  int reportID = newReportID;
+                                  //print(reportID);
+                                  if (reportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + reportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Emergencies',
+                              style: new TextStyle(fontSize: 20.0)),
+                          onPressed: () {
+                            _getReportID().then((reportID) {
+                              if (reportID == -1) {
+                                _postEmergency().then((newReportID) {
+                                  int finalReportID = newReportID;
+                                  //print(finalReportID);
+                                  if (finalReportID != -1 && reportID != null) {
+                                    _writeDataToFile(
+                                        'reportID:' + finalReportID.toString());
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content: Text(
+                                          'You cannot have more then one active report.'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 30, height: 100),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Report Status',
+                              style: new TextStyle(fontSize: 20.0)),
+
+                          onPressed: () {
+                            _getReportID().then((reportID) {
+                              int tempID = reportID;
+                              //print(tempID);
+                              if (tempID != -1) {
+                                _fetchStatus(tempID).then((reportStatus) {
+                                  String currentReportStatus = reportStatus;
+                                  //print(currentReportStatus);
+                                  if (currentReportStatus != 'Closed') {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          // Retrieve the text the user has entered by using the
+                                          // TextEditingController.
+                                          content: Text('Report Status is ' +
+                                              currentReportStatus),
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    if (tempID != -1) {
+                                      _resetFile();
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            // Retrieve the text the user has entered by using the
+                                            // TextEditingController.
+                                            content: Text(
+                                                'Your report was closed and or solved'),
+                                          );
+                                        },
+                                      );
+                                    }
+                                  }
+                                });
+                              } else {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      // Retrieve the text the user has entered by using the
+                                      // TextEditingController.
+                                      content:
+                                          Text('You have no active reports'),
+                                    );
+                                  },
+                                );
+                              }
+                            });
+                          }, //On pressed
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Center(
+                        child: RaisedButton(
+                          padding: new EdgeInsets.all(20.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                              side: BorderSide(color: Colors.red)),
+                          child: new Text('Reset button ',
+                              style: new TextStyle(fontSize: 20.0)),
+
+                          onPressed: () {
+                            _resetFile();
+                          }, //On pressed
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
-            Stack(
-              children: <Widget>[
-                CardScrollWidget(currentPage),
-                _decideImageView(),
-                Positioned.fill(
-                  child: PageView.builder(
-                    //itemCount images.length,
-                    itemCount: listOfPictures.length,
-                    controller: controller,
-                    reverse: true,
-                    itemBuilder: (context, index) {
-                      return Container();
-                    },
-                  ),
-                )
-              ],
-            ),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text("ML Model",
-                        style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 46.0,
-                        fontFamily: "Calibre-Semibold",
-                        letterSpacing: 1.0,
-                      )),
-                  IconButton(
-                    icon: Icon(
-                      CustomIcons.option,
-                      size: 12.0,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-
-
-                     _detect(context);
-
-                    },
-                  )
-                ],
-              ),
-            ),
-
-      Padding(
-        padding: const EdgeInsets.only(left: 20.0),
-        child: Row(
-          children: <Widget>[
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.blueAccent,
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: Center(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: 22.0, vertical: 6.0),
-                  child: Text("Processed Images",
-                      style: TextStyle(color: Colors.white)),
-                ),
-              ),
-            ),
-            SizedBox(
-              width: 15.0,
-            ),
-            Text("2+ Images",
-                style: TextStyle(color: Colors.blueAccent))
-          ],
-        ),
-      ),
-      SizedBox(
-        height: 20.0,
-      ),
-      Row(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(left: 18.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.0),
-              child: Image.asset("assets/image_02.jpg",
-                  width: 296.0, height: 222.0),
-            ),
-          )
-        ],
-      )
-          ],
-        ),
+          ),
+        ]),
       ),
     );
   }
 
-
-
-
-
-
-
-  //Displays image to screen
-  Widget _decideImageView() {
-    if (imageFile == null) {
-      return Text(" ");
-    } else {
-      listOfPictures.add(imageFile.path);
-      return Image.file(imageFile, width: 0, height: 0);
-    }
+  Future<int> _navigateToMedicalPage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/MedicalPage') as int;
   }
 
-  //perm stuff for camera and photos
-  void _askPermission(int number) {
-    if (number == 1) {
-      PermissionHandler().requestPermissions([PermissionGroup.photos]).then(
-          _onStatusRequested);
-    } else if (number == 2) {
-      PermissionHandler().requestPermissions([PermissionGroup.camera]).then(
-          _onStatusRequested);
-    }
+  Future<int> _navigateToFirePage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/FirePage') as int;
   }
 
-  void _updateStatus(PermissionStatus status) {
-    if (status != _status) {
-      setState(() {
-        _status = status;
-      });
-    }
+  Future<int> _navigateToNonEmergenciesPage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/NonEmergenciesPage') as int;
   }
 
-  void _onStatusRequested(
-    Map<PermissionGroup, PermissionStatus> statuses,
-  ) {
-    var status1 = statuses[PermissionGroup.photos];
-    var status2 = statuses[PermissionGroup.camera];
-
-    if (status1 == PermissionStatus.granted) {
-      _updateStatus(status1);
-    } else if (status2 == PermissionStatus.granted) {
-      _updateStatus(status2);
-    } else {
-      print('big broke');
-      PermissionHandler().openAppSettings();
-    }
+  Future<int> _navigateToPolicePage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/PolicePage') as int;
   }
 
+  Future<int> _navigateToTipsPage(BuildContext context) async {
+    return await Navigator.pushNamed(context, '/TipsPage') as int;
+  }
+}
 
-} //state Class
-
-//scrollable cards
-// ignore: must_be_immutable
-class CardScrollWidget extends StatelessWidget {
-  var currentPage;
-  var padding = 20.0;
-  var verticalInset = 20.0;
-  CardScrollWidget(this.currentPage);
-
-  @override
-  Widget build(BuildContext context) {
-    return new AspectRatio(
-      aspectRatio: widgetAspectRatio,
-      child: LayoutBuilder(builder: (context, contraints) {
-        var width = contraints.maxWidth;
-        var height = contraints.maxHeight;
-
-        var safeWidth = width - 2 * padding;
-        var safeHeight = height - 2 * padding;
-
-        var heightOfPrimaryCard = safeHeight;
-        var widthOfPrimaryCard = heightOfPrimaryCard * cardAspectRatio;
-
-        var primaryCardLeft = safeWidth - widthOfPrimaryCard;
-        var horizontalInset = primaryCardLeft / 2;
-
-        List<Widget> cardList = new List();
-
-        //for(var i = 0; i< images.length;i++){
-
-        var query = listOfPictures.distinct().toList();
-
-        for (var i = 0; i < query.length; i++) {
-          var delta = i - currentPage;
-          bool isOnRight = delta > 0;
-          var start = padding +
-              max(
-                  primaryCardLeft -
-                      horizontalInset * -delta * (isOnRight ? 15 : 1),
-                  0.0);
-          var cardItem = Positioned.directional(
-            top: padding + verticalInset * max(-delta, 0.0),
-            bottom: padding + verticalInset * max(-delta, 0.0),
-            start: start,
-            textDirection: TextDirection.rtl,
-            child: AspectRatio(
-              aspectRatio: cardAspectRatio,
-              child: Stack(
-                fit: StackFit.expand,
-                children: <Widget>[
-                  //Image.asset(images[i],fit: BoxFit.cover)
-                  Image.asset(query[i], fit: BoxFit.cover)
-                ],
-              ),
-            ),
-          );
-
-          cardList.add(cardItem);
-        }
-        return Stack(
-          children: cardList,
-        );
-      }),
+class Status {
+  final String status;
+  Status({this.status});
+  factory Status.fromJson(Map<String, dynamic> json) {
+    return Status(
+      status: json['status'],
     );
   }
+  String get getStatus {
+    return status;
+  }
+}
+
+Future<String> _fetchStatus(int id) async {
+  var value = {"report_id": id};
+  final Json = json.encode(value);
+  final response = await http.post('http://18.212.156.43:80/get_status',
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+      body: Json);
+  if (response.statusCode == 200) {
+    return Status.fromJson(json.decode(response.body)).getStatus;
+  } else {
+    throw Exception('Currently no active reports');
+  }
+}
+
+//TODO Add the timer, start the timer once an emergency report is submitted, also have it auto check for status changes everytime, and start updateGPS every time timer is done and restarted
+//TODO Do not do update gps unless it is an emergency report only enforce the check for status changes
+void _updategps(int id) async {
+  final reportStatus = await _fetchStatus(id);
+  if (reportStatus != 'Closed') {
+    final location = await _getLocation();
+    var value = {"report_id": id, "GPS": location.toString()};
+    final Json = json.encode(value);
+    final response = await http.put('http://18.212.156.43:80/change_report_gps',
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+        body: Json);
+    if (response.statusCode == 200) {
+      print('It worked');
+    } else {
+      throw Exception('Failed to update gps');
+    }
+  } else {
+    _resetFile();
+    throw Exception('No active report');
+  }
+}
+
+Future<Position> _getLocation() async {
+  var currentLocation;
+  try {
+    currentLocation = await Geolocator()
+        .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+  } catch (e) {
+    currentLocation = null;
+  }
+  return currentLocation;
+}
+
+class ReportID {
+  final int reportID;
+  ReportID({this.reportID});
+  factory ReportID.fromJson(Map<String, dynamic> json) {
+    return ReportID(
+      reportID: json['report_id'],
+    );
+  }
+  int get getReportID {
+    return reportID;
+  }
+}
+
+Future<int> _postReport(Object jsonData) async {
+  final response = await http.put('http://18.212.156.43:80/add_report',
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+      body: jsonData);
+  if (response.statusCode == 200) {
+    return ReportID.fromJson(json.decode(response.body)).getReportID;
+  } else {
+    throw Exception('Report was not submitted the status code was ' +
+        response.statusCode.toString());
+  }
+}
+
+//TODO Add a timer function to run every minute
+//TODO Add a emergency submission function
+
+Future<int> _postEmergency() async {
+  Position userLocation = await _getLocation();
+  String encodedLocation;
+  String encodedDateTime;
+  DateTime now = DateTime.now();
+  encodedDateTime = DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
+  encodedLocation = userLocation.toString();
+  var values = {
+    "timestamp": encodedDateTime,
+    "required_responders": 'FPH',
+    "status": "New",
+    "urgency": "High",
+    "GPS": encodedLocation,
+    "name": 'Anonymous',
+    "phone": 'N/A',
+    "photo": null,
+    "message":
+        'This is a emergency report we do not have anymore information at this time',
+    "report_level": "Emergency",
+    "report_type": 'Emergency'
+  };
+  final Json = json.encode(values);
+  return await _postReport(Json);
+}
+
+Future<String> get _localPath async {
+  final directory = await getApplicationDocumentsDirectory();
+  return directory.path;
+}
+
+Future<File> get _localFile async {
+  final path = await _localPath;
+  if (!File('$path/info.txt').existsSync()) {
+    File temp = File('$path/info.txt');
+    temp.writeAsStringSync('reportID:-1');
+  } else {
+    return File('$path/info.txt');
+  }
+}
+
+//File formatting should be as such
+Future<void> _writeDataToFile(String info) async {
+  File file = await _localFile;
+  file.writeAsStringSync(info);
+}
+
+Future<int> _getReportID() async {
+  File file = await _localFile;
+  String infoPreParsed = file.readAsStringSync();
+  //print(infoPreParsed);
+  return int.parse(infoPreParsed.split(':').last);
+}
+
+void _resetFile() async {
+  File temp = await _localFile;
+  temp.writeAsStringSync('reportID:-1');
 }
