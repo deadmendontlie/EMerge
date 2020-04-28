@@ -1,0 +1,71 @@
+Methods: POST, OPTIONS
+URL: http://18.212.156.43/get_muni_reports
+
+input JSON:
+{
+        "municipality_id" : 8
+}
+
+returned JSON array:
+[
+    {
+        "GPS": "Lat: 39.7079817, Long: -70.1465425",
+        "message": "Someone stole all my ice cream, and now I'm sad",
+        "municipality_id": 8,
+        "name": "Jerry Garcia",
+        "phone": "867-5309",
+        "photo": null,
+        "report_id": 124,
+        "report_level": "Non Emergency",
+        "report_type": "theft",
+        "required_responders": "P",
+        "status": "New",
+        "timestamp": "Sat, 28 Mar 2020 16:25:23 GMT",
+        "urgency": "Medium"
+    },
+    {
+        "GPS": "Lat: 39.7079817, Long: -70.1465425",
+        "message": "Someone stole all my ice cream, and now I'm sad",
+        "municipality_id": 8,
+        "name": "Jerry Garcia",
+        "phone": "867-5309",
+        "photo": null,
+        "report_id": 128,
+        "report_level": "Non Emergency",
+        "report_type": "theft",
+        "required_responders": "P",
+        "status": "New",
+        "timestamp": "Sat, 28 Mar 2020 16:25:23 GMT",
+        "urgency": "Medium"
+    },
+    {
+        "GPS": "Lat: 39.3765899, Long: -74.5228634",
+                "message": "Someone stole all my ice cream, and now I'm sad",
+        "municipality_id": 8,
+        "name": "Jerry Garcia",
+        "phone": "867-5309",
+        "photo": null,
+        "report_id": 132,
+        "report_level": "Non Emergency",
+        "report_type": "theft",
+        "required_responders": "P",
+        "status": "New",
+        "timestamp": "Sat, 28 Mar 2020 16:25:23 GMT",
+        "urgency": "Medium"
+    },
+    {
+        "GPS": "Lat: 39.3765899, Long: -74.5228634",
+        "message": "Someone stole all my ice cream, and now I'm sad",
+        "municipality_id": 8,
+        "name": "Jerry Garcia",
+        "phone": "867-5309",
+        "photo": null,
+        "report_id": 133,
+        "report_level": "Non Emergency",
+        "report_type": "theft",
+        "required_responders": "P",
+        "status": "New",
+        "timestamp": "Sat, 28 Mar 2020 16:25:23 GMT",
+        "urgency": "Medium"
+    }
+]

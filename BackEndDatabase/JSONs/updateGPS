@@ -1,0 +1,13 @@
+Methods: PUT
+URL: 18.212.156.43/get_report
+
+input JSON:
+{
+	"report_id" : 1, 
+	"GPS" : "Lat: 37.4219983, Long: -122.084"
+}
+
+returned JSON:
+{
+	"GPS": "Lat: 37.4219983, Long: -122.084"
+}

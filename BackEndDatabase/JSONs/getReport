@@ -1,0 +1,25 @@
+Methods: POST, OPTIONS
+URL: 18.212.156.43/get_report
+
+
+input JSON:
+{
+    "report_id" : 1
+}
+
+returned JSON:
+{
+    "GPS": " 90, 45",
+    "message": "Car accident at Focer and Delsea, multiple injiuries, vehicle on fire",
+    "municipality_id": 1,
+    "name": "Bob",
+    "phone": "609-923-1568",
+    "photo": null,
+    "report_id": 1,
+    "report_level": "Emergency",
+    "report_type": null,
+    "required_responders": "FPH",
+    "status": "New",
+    "timestamp": "Sun, 01 Mar 2020 17:25:23 GMT",
+    "urgency": "High"
+}

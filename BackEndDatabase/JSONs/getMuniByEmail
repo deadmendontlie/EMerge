@@ -1,0 +1,16 @@
+Methods: POST, OPTIONS
+URL: 18.212.156.43/get_muni_by_email
+
+input JSON:
+{
+	"email" : "glassboronj@emerge.com"
+}
+
+returned JSON:
+{
+    "GPS_coord": "Lat: 39.7079817, Long: -75.1465425",
+    "email": "glassboronj@emerge.com",
+    "municipality_id": 1,
+    "name": "Glassboro",
+    "state": "NJ"
+}

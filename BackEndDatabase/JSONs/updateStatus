@@ -1,0 +1,13 @@
+Methods: PUT, OPTIONS
+URL: http://18.212.156.43/update_status
+
+input JSON:
+{	
+	"report_id" : 10,
+	"status" : "Closed"
+}
+
+returned JSON:
+{
+	"status": "Closed"
+}

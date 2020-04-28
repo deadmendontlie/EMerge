@@ -1,0 +1,14 @@
+Methods: PUT, OPTIONS
+URL: 18.212.156.43/add_emer_service
+
+input JSON:
+{
+	"service_type" : "Hospital",
+	"name" : "Ralph's Veterinary and Plastic Surgury Clinic",
+	"municipality_id" : 8
+}
+
+returned JSON:
+{
+    "Agency ID": 12
+}

@@ -1,0 +1,3 @@
+//TODO Clean up all of the text and add all of the proper report types
+//TODO Decide on if we want add a verification pop up before they submit the report
+//TODO Remove the dialog at the end when this is done
