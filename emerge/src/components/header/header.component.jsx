@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Redirect, useHistory} from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { Dropdown, ButtonGroup, Button } from 'react-bootstrap';
 import { auth } from '../../firebase/firebase.util';
 
@@ -16,9 +16,9 @@ const Header = ({ currentUser, UserName}) => (
             <Logo className='logo' />
         </Link>
         :
-        <Link className='logo-container'>
+        <div className='logo-container'>
             <Logo className='logo' />
-        </Link>
+        </div>
         }
         <div className='options'>
             {
