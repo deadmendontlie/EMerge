@@ -1,0 +1,10 @@
+Methods: GET, OPTIONS
+URL: 18.212.156.43/test
+
+input:
+	nothing; simple GET request
+
+returned JSON:
+{
+    "test": "Test Success"
+}

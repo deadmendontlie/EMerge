@@ -1,0 +1,35 @@
+Methods: POST, OPTIONS
+URL: 18.212.156.43/get_report_responders
+
+input JSON:
+{
+	"report_id" : 1
+}
+
+returned JSON array:
+[
+    {
+        "agency_id": 1,
+        "municipality_id": 1,
+        "name": "Glasboro Fire Department",
+        "service_type": "Fire"
+    },
+    {
+        "agency_id": 2,
+        "municipality_id": 1,
+        "name": "Rowan University Police Department",
+        "service_type": "Police"
+    },
+    {
+        "agency_id": 4,
+        "municipality_id": 1,
+        "name": "Jefferson Washington Township Hospital",
+        "service_type": "Hospital"
+    },
+    {
+        "agency_id": 6,
+        "municipality_id": 1,
+        "name": "Inspira Medical Center, Woodbury",
+        "service_type": "Hospital"
+    }
+]

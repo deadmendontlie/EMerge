@@ -1,0 +1,51 @@
+Methods: GET, OPTIONS
+URL: 18.212.156.43/get_all_agency
+
+input:
+	simple GET; no input parameters
+
+returned JSON array:
+[
+    {
+        "agency_id": 1,
+        "municipality_id": 1,
+        "name": "Glasboro Fire Department",
+        "service_type": "Fire"
+    },
+    {
+        "agency_id": 2,
+        "municipality_id": 1,
+        "name": "Rowan University Police Department",
+        "service_type": "Police"
+    },
+    {
+        "agency_id": 3,
+        "municipality_id": 1,
+        "name": "Glassboro Police Department",
+        "service_type": "Police"
+    },
+    {
+        "agency_id": 4,
+        "municipality_id": 1,
+        "name": "Jefferson Washington Township Hospital",
+        "service_type": "Hospital"
+    },
+    {
+        "agency_id": 5,
+        "municipality_id": 1,
+        "name": "Inspira Medical Center, Elmira",
+        "service_type": "Hospital"
+    },
+    {
+        "agency_id": 6,
+        "municipality_id": 1,
+        "name": "Inspira Medical Center, Woodbury",
+        "service_type": "Hospital"
+    },
+    {
+        "agency_id": 7,
+        "municipality_id": 1,
+        "name": "Jefferson Stratford Hospital",
+        "service_type": "Hospital"
+    }
+]

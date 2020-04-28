@@ -1,0 +1,17 @@
+Methods: PUT, OPTIONS
+URL: http://18.212.156.43/add_muni
+
+
+input json:
+{
+	"name" : "București",
+	"state" : "RO",
+	"GPS_coord" : "Lat: 44.4377401, Long: 25.9545526",
+	"email" : "bucureștiro@emerge.com"
+}
+
+
+return json:
+{
+    "municipality_id": 15
+}

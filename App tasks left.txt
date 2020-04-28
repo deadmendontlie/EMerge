@@ -1,0 +1,13 @@
+Things that are left to do to finish the app
+These need to be finished to have complete functionality
+1.Finish setting up the creation of a report by sending it to the database end
+2.Add the automatic update feature of geolocation of a current report
+3.Get the status report checker to work
+4. Clean up the text and add the rest of the information
+
+These don't need to be finished before we are techinically done. These are considered not necessary functionality
+1.Add functionality to be able to send pictures
+2.Clean up the UI and make it look pretty
+3.Add confirmation pop up for the user when they submit a report
+4.Add a pop that will ask them if they are sure they want to submit the report
+I believe that is everything

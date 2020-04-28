@@ -1,0 +1,13 @@
+Methods: PUT, OPTIONS
+URL: 18.212.156.43//assign_report_responders
+
+input JSON:
+{
+	"report_id" : 1,
+	"agency_id" : 6
+}
+
+returned JSON:
+{
+    "response_id": 5
+}
