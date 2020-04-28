@@ -24,6 +24,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
   String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
+    //These take in our text input to be used
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -48,9 +49,6 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            //TODO Clean up all of the text and add all of the proper report types
-            //TODO add a verification pop up before they submit the report
-            //TODO Remove the dialog at the end when this is done
             Text(
               "Please Select What Services are Required as well(Defaults to Just Medical)",
               style: TextStyle(
@@ -75,7 +73,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 setState(() {});
               },
               value: _service,
-            ), //DropdownButton
+            ),
             Text(
               "Please Select Type of Report",
               style: TextStyle(
@@ -107,7 +105,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 setState(() {});
               },
               value: _report,
-            ), //DropdownButton
+            ),
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",
               style: TextStyle(
@@ -132,8 +130,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(45),
                 WhitelistingTextInputFormatter(new RegExp(
-                    '[A-Za-z\\s]')), //This will allow for letters and periods
-                //BlacklistingTextInputFormatter(new RegExp('[\\,\\.]')), //This stops commas and periods
+                    '[A-Za-z\\s]')), //This will allow for letters and spaces
               ],
             ),
             Text(
@@ -160,8 +157,8 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
               style: TextStyle(color: Colors.white),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(14),
-                WhitelistingTextInputFormatter.digitsOnly,
-                //WhitelistingTextInputFormatter(new RegExp('[\\-,1,2,3,4,5,6,7,8,9,0]')) //This will allow for numbers and -
+                WhitelistingTextInputFormatter
+                    .digitsOnly, //This will allow for numbers
               ],
             ),
             Text(
@@ -190,9 +187,9 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 LengthLimitingTextInputFormatter(256),
                 WhitelistingTextInputFormatter(new RegExp(
                     '[A-Za-z\\.\\s]')), //This will allow for letters, spaces, and periods
-                //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
               ],
             ),
+            //This processes all the information someone entered and puts it in a json format
             Center(
               child: RaisedButton(
                 padding: new EdgeInsets.all(20.0),
@@ -201,7 +198,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                     side: BorderSide(color: Colors.red)),
                 child: Text('Submit'),
                 onPressed: () async {
-                  _userLocation = await _getLocation() as Position;
+                  _userLocation = await _getLocation();
                   String encodeName;
                   String encodeNumber;
                   String encodedAdditional;
@@ -280,15 +277,13 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {
                     _reportID = reportIDValue;
-                    print(_reportID);
                     Navigator.pop(context, _reportID);
                   });
                   return showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        // Retrieve the text the user has entered by using the
-                        // TextEditingController.
+                        //TODO remove the json pop ups
                         content: Text(Json + "\nYour report was submitted"),
                       );
                     },
@@ -303,6 +298,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
   }
 }
 
+//This gets the users current location
 Future<Position> _getLocation() async {
   var currentLocation;
   try {
@@ -314,6 +310,7 @@ Future<Position> _getLocation() async {
   return currentLocation;
 }
 
+//This will create objects to allow for easy parsing of a json file containing report id
 class ReportID {
   final int reportID;
   ReportID({this.reportID});
@@ -327,6 +324,7 @@ class ReportID {
   }
 }
 
+//This will actually post the json file to the server
 Future<int> _postReport(Object jsonData) async {
   final response = await http.put('http://18.212.156.43:80/add_report',
       headers: {
@@ -337,7 +335,6 @@ Future<int> _postReport(Object jsonData) async {
   if (response.statusCode == 200) {
     return ReportID.fromJson(json.decode(response.body)).getReportID;
   } else {
-    print(response.statusCode);
     throw Exception('Report was not submitted');
   }
 }

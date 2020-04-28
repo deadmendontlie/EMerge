@@ -36,8 +36,6 @@ class MyApp extends StatelessWidget {
       '/FirePage': (context) => FirePage(),
       '/TipsPage': (context) => TipsPage(),
       '/NonEmergenciesPage': (context) => NonEmergenciesPage(),
-
-      //'/timer':(context) => timer();
     });
   }
 }
@@ -72,13 +70,12 @@ class StartScreen extends StatelessWidget {
                           child: new Text('Medical',
                               style: new TextStyle(fontSize: 20.0)),
                           onPressed: () {
-                            //Returns a value currently when the function ends
+                            //Returns the reportID if it submitted currently when the function ends
                             _getReportID().then((reportID) {
                               if (reportID == -1) {
                                 _navigateToMedicalPage(context)
                                     .then((newReportID) {
                                   int reportID = newReportID;
-                                  //print(reportID);
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
@@ -90,8 +87,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content: Text(
                                           'You cannot have more then one active report.'),
                                     );
@@ -112,13 +107,12 @@ class StartScreen extends StatelessWidget {
                           child: new Text('Police',
                               style: new TextStyle(fontSize: 20.0)),
                           onPressed: () {
-                            //Returns a value currently when the function ends
+                            //Returns the reportID if it submitted currently when the function ends
                             _getReportID().then((reportID) {
                               if (reportID == -1) {
                                 _navigateToPolicePage(context)
                                     .then((newReportID) {
                                   int reportID = newReportID;
-                                  //print(reportID);
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
@@ -130,8 +124,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content: Text(
                                           'You cannot have more then one active report.'),
                                     );
@@ -156,13 +148,12 @@ class StartScreen extends StatelessWidget {
                               borderRadius: new BorderRadius.circular(20.0),
                               side: BorderSide(color: Colors.red)),
                           onPressed: () {
-                            //Returns a value currently when the function ends
+                            //Returns the reportID if it submitted currently when the function ends
                             _getReportID().then((reportID) {
                               if (reportID == -1) {
                                 _navigateToFirePage(context)
                                     .then((newReportID) {
                                   int reportID = newReportID;
-                                  //print(reportID);
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
@@ -174,8 +165,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content: Text(
                                           'You cannot have more then one active report.'),
                                     );
@@ -196,13 +185,12 @@ class StartScreen extends StatelessWidget {
                           child: new Text('Tips',
                               style: new TextStyle(fontSize: 20.0)),
                           onPressed: () {
-                            //Returns a value currently when the function ends
+                            //Returns the reportID if it submitted currently when the function ends
                             _getReportID().then((reportID) {
                               if (reportID == -1) {
                                 _navigateToTipsPage(context)
                                     .then((newReportID) {
                                   int reportID = newReportID;
-                                  //print(reportID);
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
@@ -214,8 +202,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content: Text(
                                           'You cannot have more then one active report.'),
                                     );
@@ -240,13 +226,12 @@ class StartScreen extends StatelessWidget {
                           child: new Text(' \t \t \t \t Non \n Emergencies',
                               style: new TextStyle(fontSize: 20.0)),
                           onPressed: () {
-                            //Returns a value currently when the function ends
+                            //Returns the reportID if it submitted currently when the function ends
                             _getReportID().then((reportID) {
                               if (reportID == -1) {
                                 _navigateToNonEmergenciesPage(context)
                                     .then((newReportID) {
                                   int reportID = newReportID;
-                                  //print(reportID);
                                   if (reportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + reportID.toString());
@@ -258,8 +243,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content: Text(
                                           'You cannot have more then one active report.'),
                                     );
@@ -270,6 +253,7 @@ class StartScreen extends StatelessWidget {
                           },
                         ),
                       ),
+                      //Posts an emergency report
                       SizedBox(width: 20),
                       Center(
                         child: RaisedButton(
@@ -284,7 +268,6 @@ class StartScreen extends StatelessWidget {
                               if (reportID == -1) {
                                 _postEmergency().then((newReportID) {
                                   int finalReportID = newReportID;
-                                  //print(finalReportID);
                                   if (finalReportID != -1 && reportID != null) {
                                     _writeDataToFile(
                                         'reportID:' + finalReportID.toString());
@@ -296,8 +279,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content: Text(
                                           'You cannot have more then one active report.'),
                                     );
@@ -319,24 +300,19 @@ class StartScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(20.0),
                               side: BorderSide(color: Colors.red)),
-                          child: new Text('Report Status',
+                          child: new Text('Get Report Status',
                               style: new TextStyle(fontSize: 20.0)),
-
                           onPressed: () {
                             _getReportID().then((reportID) {
                               int tempID = reportID;
-                              //print(tempID);
                               if (tempID != -1) {
                                 _fetchStatus(tempID).then((reportStatus) {
                                   String currentReportStatus = reportStatus;
-                                  //print(currentReportStatus);
                                   if (currentReportStatus != 'Closed') {
                                     showDialog(
                                       context: context,
                                       builder: (context) {
                                         return AlertDialog(
-                                          // Retrieve the text the user has entered by using the
-                                          // TextEditingController.
                                           content: Text('Report Status is ' +
                                               currentReportStatus),
                                         );
@@ -349,8 +325,6 @@ class StartScreen extends StatelessWidget {
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
-                                            // Retrieve the text the user has entered by using the
-                                            // TextEditingController.
                                             content: Text(
                                                 'Your report was closed and or solved'),
                                           );
@@ -364,8 +338,6 @@ class StartScreen extends StatelessWidget {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      // Retrieve the text the user has entered by using the
-                                      // TextEditingController.
                                       content:
                                           Text('You have no active reports'),
                                     );
@@ -376,6 +348,7 @@ class StartScreen extends StatelessWidget {
                           }, //On pressed
                         ),
                       ),
+                      //TODO remove this later
                       SizedBox(width: 20),
                       Center(
                         child: RaisedButton(
@@ -383,9 +356,8 @@ class StartScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(20.0),
                               side: BorderSide(color: Colors.red)),
-                          child: new Text('Reset button ',
+                          child: new Text('Reset button',
                               style: new TextStyle(fontSize: 20.0)),
-
                           onPressed: () {
                             _resetFile();
                           }, //On pressed
@@ -402,27 +374,33 @@ class StartScreen extends StatelessWidget {
     );
   }
 
+  //Transitions to the medical page
   Future<int> _navigateToMedicalPage(BuildContext context) async {
     return await Navigator.pushNamed(context, '/MedicalPage') as int;
   }
 
+  //Transitions to the fire page
   Future<int> _navigateToFirePage(BuildContext context) async {
     return await Navigator.pushNamed(context, '/FirePage') as int;
   }
 
+  //Transitions to the non-emergencies page page
   Future<int> _navigateToNonEmergenciesPage(BuildContext context) async {
     return await Navigator.pushNamed(context, '/NonEmergenciesPage') as int;
   }
 
+  //Transitions to the medical page
   Future<int> _navigateToPolicePage(BuildContext context) async {
     return await Navigator.pushNamed(context, '/PolicePage') as int;
   }
 
+  //Transitions to the medical page
   Future<int> _navigateToTipsPage(BuildContext context) async {
     return await Navigator.pushNamed(context, '/TipsPage') as int;
   }
 }
 
+//This will create objects to allow for easy parsing of a json file containing status
 class Status {
   final String status;
   Status({this.status});
@@ -436,6 +414,7 @@ class Status {
   }
 }
 
+//This gets the current status of a report
 Future<String> _fetchStatus(int id) async {
   var value = {"report_id": id};
   final Json = json.encode(value);
@@ -452,8 +431,7 @@ Future<String> _fetchStatus(int id) async {
   }
 }
 
-//TODO Add the timer, start the timer once an emergency report is submitted, also have it auto check for status changes everytime, and start updateGPS every time timer is done and restarted
-//TODO Do not do update gps unless it is an emergency report only enforce the check for status changes
+//This gets a the users current location and then sends a request to update their report with new gps coordinates
 Future<void> _updategps(int id) async {
   final location = await _getLocation();
   var value = {"report_id": id, "GPS": location.toString()};
@@ -464,13 +442,12 @@ Future<void> _updategps(int id) async {
         "accept": "application/json",
       },
       body: Json);
-  if (response.statusCode == 200) {
-    print('It worked');
-  } else {
+  if (response.statusCode != 200) {
     throw Exception('Failed to update gps');
   }
 }
 
+//This gets the users current location
 Future<Position> _getLocation() async {
   var currentLocation;
   try {
@@ -482,6 +459,7 @@ Future<Position> _getLocation() async {
   return currentLocation;
 }
 
+//This will create objects to allow for easy parsing of a json file containing report id
 class ReportID {
   final int reportID;
   ReportID({this.reportID});
@@ -495,6 +473,7 @@ class ReportID {
   }
 }
 
+//This will actually post the json file to the server
 Future<int> _postReport(Object jsonData) async {
   final response = await http.put('http://18.212.156.43:80/add_report',
       headers: {
@@ -510,9 +489,7 @@ Future<int> _postReport(Object jsonData) async {
   }
 }
 
-//TODO Add a timer function to run every minute
-//TODO Add a emergency submission function
-
+//This creates a json file that will be sent to post report
 Future<int> _postEmergency() async {
   Position userLocation = await _getLocation();
   String encodedLocation;
@@ -538,11 +515,13 @@ Future<int> _postEmergency() async {
   return await _postReport(Json);
 }
 
+//This get the local file path of the device and app
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
   return directory.path;
 }
 
+//This creates a info.txt file on the local system and writes the default value to it
 Future<File> get _localFile async {
   final path = await _localPath;
   if (!File('$path/info.txt').existsSync()) {
@@ -553,37 +532,35 @@ Future<File> get _localFile async {
   }
 }
 
-//File formatting should be as such
+//This writes to a file
 Future<void> _writeDataToFile(String info) async {
   File file = await _localFile;
   file.writeAsStringSync(info);
 }
 
+//This gets the report ID from a file if it is in the specified format
 Future<int> _getReportID() async {
   File file = await _localFile;
   String infoPreParsed = file.readAsStringSync();
-  //print(infoPreParsed);
   return int.parse(infoPreParsed.split(':').last);
 }
 
+//Resets the file to the default format and report id
 void _resetFile() async {
   File temp = await _localFile;
   temp.writeAsStringSync('reportID:-1');
 }
 
+//This is a timer that runs every minute to get the status changes and will update gps
 void _timer(int value) async {
   int reportID = await _getReportID();
   String status;
   Timer timerMin = new Timer.periodic(new Duration(minutes: 1), (time) async {
-    print('1 Min up');
     status = await _fetchStatus(reportID);
-    print(status);
     if (status == 'Closed') {
-      print('should be cancelled');
       time.cancel();
       _writeDataToFile('reportID:-1');
     } else if (value == 1) {
-      print('Update Gps');
       _updategps(reportID);
     }
   });

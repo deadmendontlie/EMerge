@@ -24,6 +24,7 @@ class _FirePageWidgetState extends State<FirePage> {
   String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
+    //These take in our text input to be used
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -44,9 +45,6 @@ class _FirePageWidgetState extends State<FirePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
-              //TODO Clean up all of the text and add all of the proper report types
-              //TODO add a verification pop up before they submit the report
-              //TODO Remove the dialog at the end when this is done
               Text(
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
                 style: TextStyle(
@@ -199,7 +197,7 @@ class _FirePageWidgetState extends State<FirePage> {
                       side: BorderSide(color: Colors.red)),
                   child: Text('Submit'),
                   onPressed: () async {
-                    _userLocation = await _getLocation() as Position;
+                    _userLocation = await _getLocation();
                     String encodeName;
                     String encodeNumber;
                     String encodedAdditional;
@@ -280,16 +278,14 @@ class _FirePageWidgetState extends State<FirePage> {
                     final Json = json.encode(values);
                     _postReport(Json).then((reportIDValue) {
                       _reportID = reportIDValue;
-                      print(_reportID);
                       Navigator.pop(context, _reportID);
                     });
                     return showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          // Retrieve the text the user has entered by using the
-                          // TextEditingController.
-                          content: Text(Json),
+                          //TODO remove the json pop ups
+                          content: Text(Json + "\nYour report was submitted"),
                         );
                       },
                     );
@@ -305,6 +301,7 @@ class _FirePageWidgetState extends State<FirePage> {
   }
 }
 
+//This gets the users current location
 Future<Position> _getLocation() async {
   var currentLocation;
   try {
@@ -316,6 +313,7 @@ Future<Position> _getLocation() async {
   return currentLocation;
 }
 
+//This will create objects to allow for easy parsing of a json file containing report id
 class ReportID {
   final int reportID;
   ReportID({this.reportID});
@@ -329,6 +327,7 @@ class ReportID {
   }
 }
 
+//This will actually post the json file to the server
 Future<int> _postReport(Object jsonData) async {
   final response = await http.put('http://18.212.156.43:80/add_report',
       headers: {
@@ -339,7 +338,6 @@ Future<int> _postReport(Object jsonData) async {
   if (response.statusCode == 200) {
     return ReportID.fromJson(json.decode(response.body)).getReportID;
   } else {
-    print(response.statusCode);
     throw Exception('Report was not submitted');
   }
 }
