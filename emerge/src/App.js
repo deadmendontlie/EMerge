@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
+import axios from 'axios';
 
 import './App.css';
 
@@ -11,13 +12,17 @@ import SignUp from './components/sign-up/sign-up.component';
 
 import { auth, createUserProfileDocument, } from './firebase/firebase.util';
 
+
+
 class App extends React.Component {
   constructor() {
     super();
 
     this.state = {
       currentUser: null,
-      UserName: null
+      UserName: null,
+      email: null,
+      municipality_id: null
     }
   }
 
@@ -39,6 +44,9 @@ class App extends React.Component {
                    // used to see who logged in
 
                 this.setState({UserName: this.state.currentUser.displayName});
+                this.setState({email: this.state.currentUser.email});
+                
+                
                 //this.state.AdminOn='something';
               //this.state.AdminOn=null;
             
@@ -53,7 +61,16 @@ class App extends React.Component {
             this.setState({AdminOn: null})
           }
     });
-  
+    axios.post('http://18.212.156.43/get_muni_by_email', {
+			email: this.state.email
+		})
+		.then((response) => {
+			console.log(response.data);
+			const municipality_id = response.data.municipality_id;
+            this.setState({ municipality_id })
+		}, (error) => {
+			console.log(error);
+		})
   }
   
   // this will close the subscription
@@ -64,13 +81,14 @@ class App extends React.Component {
 
 
   render() {
+    
     return(
       <div>
        <Header currentUser={this.state.currentUser} UserName={this.state.UserName}/>
         <Switch>
           <Route exact path='/' 
               render={() => this.state.UserName==='Admin' ? (<Redirect to='/admin'/>) 
-              : this.state.currentUser ? (<HomePage></HomePage>)
+              : this.state.currentUser ? (<HomePage municipality_id={this.state.municipality_id}></HomePage>)
               :(<Redirect to='/signin'/>)}/>
           <Route exact path='/signin' 
               render={() => this.state.currentUser ? (<Redirect to='/'/>) : (<SignInPage/>)}/>
@@ -88,5 +106,5 @@ class App extends React.Component {
   
 }
 
-
 export default App;
+
