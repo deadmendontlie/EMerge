@@ -1,6 +1,10 @@
 import React from 'react';
 import { Panel } from "@bumaga/tabs";
 import axios from 'axios';
+import GMap from '../GMap/map.component';
+import CustomButton from '../custom-button/custom-button.component';
+import Popup from "reactjs-popup";
+import './usertable.styles.scss';
 
 //Gives the buttons functionality to change reports' statuses
 function handleClick(passed_report_id, passed_status) {
@@ -44,7 +48,12 @@ class UserTable extends React.Component {
                             <p hidden>report_id={item.report_id}</p>
                             <p><b>Description:</b> {item.message}</p>
                             <p><b>Time Submitted:</b> {item.timestamp}</p>
-                            <p><b>Location:</b> {item.GPS}</p>
+                            {/* Createad a popup video and imbeded google maps into it */}
+                            <Popup modal trigger={<CustomButton>Location: {item.GPS}</CustomButton>}>
+                                <div className="size">
+                                    <GMap location={item.GPS}></GMap>
+                                </div>
+                            </Popup>
                         </div>
                         <div className="button-container">
                             <button className="acknowledge-button" onClick={() => handleClick(item.report_id, "Dispatched")}>Acknowledge</button>
@@ -58,7 +67,12 @@ class UserTable extends React.Component {
                             <p hidden>report_id={item.report_id}</p>
                             <p><b>Description:</b> {item.message}</p>
                             <p><b>Time Submitted:</b> {item.timestamp}</p>
-                            <p><b>Location:</b> {item.GPS}</p>
+                            {/* Createad a popup video and imbeded google maps into it */}
+                            <Popup modal trigger={<CustomButton>Location: {item.GPS}</CustomButton>}>
+                                <div className="size">
+                                    <GMap location={item.GPS}></GMap>
+                                </div>
+                            </Popup>
                         </div>
                         <div className="button-container">
                             <button className="solve-button" onClick={() => handleClick(item.report_id, "Closed")}>Solve</button>
@@ -72,7 +86,12 @@ class UserTable extends React.Component {
                             <p hidden>report_id={item.report_id}</p>
                             <p><b>Description:</b> {item.message}</p>
                             <p><b>Time Submitted:</b> {item.timestamp}</p>
-                            <p><b>Location:</b> {item.GPS}</p>
+                            {/* Createad a popup video and imbeded google maps into it */}
+                            <Popup modal trigger={<CustomButton>Location: {item.GPS}</CustomButton>}>
+                                <div className="size">
+                                    <GMap location={item.GPS}></GMap>
+                                </div>
+                            </Popup>
                         </div>
                     </div>;
         });
