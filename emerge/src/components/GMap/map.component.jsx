@@ -7,28 +7,19 @@ const mapStyles = {
   height: '100%',
 };
 
-// global variables that hold the longitude and latitude
-var latitude = null;
-var long = null;
-
-// this creates a map with a marker on it.
 export class GMap extends React.Component {
 
   render(){
-    
     // parsing the longitude and latitude from location field
     // into 2 separate variables long and latitude
-    // if they are the same then do nothing if they are not change them 
-    if(latitude !== this.props.location.substr(0,this.props.location.indexOf(',')).substr(5))
-    {
-    latitude = this.props.location.substr(0,this.props.location.indexOf(',')).substr(5);
-    }
-    if(long !== this.props.location.substr(this.props.location.indexOf(',')).substr(8))
-    {
-    long = this.props.location.substr(this.props.location.indexOf(',')).substr(8);
-    }
+    const latitude = this.props.location.substr(0,this.props.location.indexOf(',')).substr(5);
+    const long = this.props.location.substr(this.props.location.indexOf(',')).substr(8);
   return (
       <div className='mapStyles'>
+        {/* {console.log("location" + this.props.location)}
+        {console.log("lat" + latitude)}
+        {console.log("long"+ long)} */}
+        {/* Creating the Map and a Marker with the specified latitude and longitude */}
         <Map className='mapStyles'
           google={this.props.google}
           zoom={8}
