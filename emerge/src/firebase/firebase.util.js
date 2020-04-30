@@ -1,7 +1,8 @@
 import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/auth';
-
+// below is the firebase api Key
+// we use it to get access to our firebase services
 const config = {
     apiKey: "AIzaSyC8eK_le1oQzFsqcbjEhpxB_cNlpJdi7og",
     authDomain: "emerge-cd9a6.firebaseapp.com",
@@ -13,6 +14,7 @@ const config = {
     measurementId: "G-4QVS1H1D5K"
 };
 
+// we initialize it here
 firebase.initializeApp(config);
 
 export const createUserProfileDocument =  async (userAuth, additionalData) => {
@@ -46,6 +48,10 @@ export const createUserProfileDocument =  async (userAuth, additionalData) => {
     return userRef;
   };
 
+  // below we are creating constans holding values
+  // that will be used in different components
+  // auth holds the current authentification
+  // firestore is our NOSQL database 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
