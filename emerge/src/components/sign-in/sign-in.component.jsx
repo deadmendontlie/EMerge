@@ -21,8 +21,11 @@ class SignIn extends React.Component{
 handleSubmit = async event => {
     event.preventDefault();
 
+    // setting our variables state
     const { email, password } = this.state;
-
+    
+    // here we are checking for sign in
+    // if any issue report thorugh console.
     try {
         await auth.signInWithEmailAndPassword(email, password);
         this.setState({email: '', password: ''});
@@ -30,7 +33,7 @@ handleSubmit = async event => {
         console.log(error);
     }
 }
-
+// here we set the name variables
 handleChange = event => {
     const { value, name } = event.target;
 
@@ -38,6 +41,8 @@ handleChange = event => {
 }
 
 render () {
+    // below is the personalized Form input for the sign in user
+    // this is what the user will use when signing into our website.
     return(
         <div className='sign-in'>
             <h2>Welcome to Emerge</h2>
