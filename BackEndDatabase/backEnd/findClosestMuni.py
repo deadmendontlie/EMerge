@@ -5,7 +5,7 @@
 # Purpose: Takes input of all municipalities and parses GPS coordinates. Then parses input report GPS
 # and calls haversine to compare distances between the report GPS and all of the munis; assigning the
 # report to the closest one. If either municipality or report GPS is not in expected format, defaults
-# to municipality_id 1
+# to municipality_id 21, Robonia.
 
 import math
 
