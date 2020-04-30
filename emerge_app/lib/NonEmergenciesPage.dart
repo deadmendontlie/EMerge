@@ -24,7 +24,6 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
 
   @override
   Widget build(BuildContext context) {
-    //These take in our text input to be used
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -46,11 +45,14 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            //TODO Clean up all of the text and add all of the proper report types
+            //TODO add a verification pop up before they submit the report
+            //TODO Remove the dialog at the end when this is done
             //This pge will be able to send to medical fire and police as well but will be labelled differently
             Text(
               "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
               style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.normal,
                   color: Colors.white),
             ),
@@ -81,17 +83,18 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 setState(() {});
               },
               value: _service,
+              style:TextStyle(color: Colors.blueGrey[600]),
             ),
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",
               style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.normal,
                   color: Colors.white),
             ),
             TextFormField(
               controller: myControllerName,
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.center,
               autocorrect: false,
               showCursor: true,
               toolbarOptions: ToolbarOptions(
@@ -101,7 +104,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 paste: false,
               ),
               decoration: new InputDecoration.collapsed(
-                  hintText: "Please enter your name"),
+                  hintText: "Please enter your name",
+                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(color: Colors.white),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(45),
@@ -113,13 +117,13 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
             Text(
               "Please submit your phone number(Not required)",
               style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.normal,
                   color: Colors.white),
             ),
             TextFormField(
               controller: myControllerNumber,
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.center,
               autocorrect: false,
               showCursor: true,
               keyboardType: TextInputType.number,
@@ -130,7 +134,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 paste: false,
               ),
               decoration: new InputDecoration.collapsed(
-                  hintText: "Please enter phone number"),
+                  hintText: "Please enter phone number",
+                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.normal,
@@ -144,13 +149,13 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
             Text(
               "Enter any additional information below",
               style: TextStyle(
-                  fontSize: 15.0,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.normal,
                   color: Colors.white),
             ),
             TextFormField(
               controller: myControllerAdditionalInformation,
-              textAlign: TextAlign.left,
+              textAlign: TextAlign.center,
               autocorrect: true,
               showCursor: true,
               toolbarOptions: ToolbarOptions(
@@ -161,7 +166,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
               ),
               decoration: new InputDecoration.collapsed(
                   hintText:
-                      "Enter any other information Enter any other information"),
+                      "Enter any other information Enter any other information",
+                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.normal,
@@ -173,20 +179,24 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
               ],
             ),
-            //This processes all the information someone entered and puts it in a json format
             Center(
               child: RaisedButton(
                 padding: new EdgeInsets.all(20.0),
                 shape: RoundedRectangleBorder(
                     borderRadius: new BorderRadius.circular(20.0),
-                    side: BorderSide(color: Colors.red)),
+                    side: BorderSide(color: Colors.white)),
                 child: Text('Submit'),
-                onPressed: () async {
-                  _userLocation = await _getLocation();
+                onPressed: () {
+                  _getLocation().then((value) {
+                    setState(() {
+                      _userLocation = value;
+                    });
+                  });
                   String encodeName;
                   String encodeNumber;
                   String encodedAdditional;
                   String encodedService;
+                  String encodedReport;
                   String encodedLocation;
                   String encodedDateTime;
                   DateTime now = DateTime.now();
@@ -252,14 +262,16 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {
                     _reportID = reportIDValue;
+                    print(_reportID);
                     Navigator.pop(context, _reportID);
                   });
                   return showDialog(
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        //TODO remove the json pop ups
-                        content: Text(Json + "\nYour report was submitted"),
+                        // Retrieve the text the user has entered by using the
+                        // TextEditingController.
+                        content: Text(Json),
                       );
                     },
                   );
@@ -273,7 +285,6 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
   }
 }
 
-//This gets the users current location
 Future<Position> _getLocation() async {
   var currentLocation;
   try {
@@ -285,7 +296,6 @@ Future<Position> _getLocation() async {
   return currentLocation;
 }
 
-//This will create objects to allow for easy parsing of a json file containing report id
 class ReportID {
   final int reportID;
   ReportID({this.reportID});
@@ -299,7 +309,6 @@ class ReportID {
   }
 }
 
-//This will actually post the json file to the server
 Future<int> _postReport(Object jsonData) async {
   final response = await http.put('http://18.212.156.43:80/add_report',
       headers: {
@@ -310,6 +319,7 @@ Future<int> _postReport(Object jsonData) async {
   if (response.statusCode == 200) {
     return ReportID.fromJson(json.decode(response.body)).getReportID;
   } else {
+    print(response.statusCode);
     throw Exception('Report was not submitted');
   }
 }

@@ -13,7 +13,7 @@ class FirePage extends StatefulWidget {
 }
 
 class _FirePageWidgetState extends State<FirePage> {
-  Position _userLocation;
+  Position userLocation;
   @override
   initState() {
     super.initState();
@@ -24,7 +24,6 @@ class _FirePageWidgetState extends State<FirePage> {
   String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
-    //These take in our text input to be used
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -45,40 +44,46 @@ class _FirePageWidgetState extends State<FirePage> {
         body: SingleChildScrollView(
           child: Column(
             children: [
+              //TODO Clean up all of the text and add all of the proper report types
+              //TODO add a verification pop up before they submit the report
+              //TODO Remove the dialog at the end when this is done
               Text(
                 "Please Select What Services are Required as well(Defaults to Just Fire)",
                 style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.normal,
                     color: Colors.white),
               ),
               DropdownButton<String>(
-                //Service drop down
-                hint: Text(
-                  'Please Choose One',
-                  style: TextStyle(color: Colors.white),
-                ),
-                items: <String>[
-                  'None',
-                  'Medical',
-                  'Police',
-                  'Medical and Police'
-                ].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (String changed) {
-                  _service = changed;
-                  setState(() {});
-                },
-                value: _service,
-              ),
+                  //Service drop down
+                  hint: Text(
+                    'Please Choose One',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  items: <String>[
+                    'None',
+                    'Medical',
+                    'Police',
+                    'Medical and Police'
+                  ].map((String value) {
+                    return new DropdownMenuItem<String>(
+                      value: value,
+                      child: new Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String changed) {
+                    _service = changed;
+                    setState(() {});
+                  },
+                  value: _service,
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white)),
               Text(
                 "Please Select Type of Report",
                 style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.normal,
                     color: Colors.white),
               ),
@@ -108,13 +113,13 @@ class _FirePageWidgetState extends State<FirePage> {
               Text(
                 "Please enter your name otherwise this will be submitted Anonymously",
                 style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.normal,
                     color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerName,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 autocorrect: false,
                 showCursor: true,
                 toolbarOptions: ToolbarOptions(
@@ -124,7 +129,9 @@ class _FirePageWidgetState extends State<FirePage> {
                   paste: false,
                 ),
                 decoration: new InputDecoration.collapsed(
-                    hintText: "Please enter your name"),
+                    hintText: "Please enter your name",
+                    hintStyle:
+                        TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
                 style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(45),
@@ -136,13 +143,13 @@ class _FirePageWidgetState extends State<FirePage> {
               Text(
                 "Please submit your phone number(Not required)",
                 style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.normal,
                     color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerNumber,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 autocorrect: false,
                 showCursor: true,
                 keyboardType: TextInputType.number,
@@ -153,7 +160,9 @@ class _FirePageWidgetState extends State<FirePage> {
                   paste: false,
                 ),
                 decoration: new InputDecoration.collapsed(
-                    hintText: "Please enter phone number"),
+                    hintText: "Please enter phone number",
+                    hintStyle:
+                        TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
                 style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(14),
@@ -164,13 +173,13 @@ class _FirePageWidgetState extends State<FirePage> {
               Text(
                 "Enter any additional information below",
                 style: TextStyle(
-                    fontSize: 15.0,
+                    fontSize: 20.0,
                     fontWeight: FontWeight.normal,
                     color: Colors.white),
               ),
               TextFormField(
                 controller: myControllerAdditionalInformation,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 autocorrect: true,
                 showCursor: true,
                 toolbarOptions: ToolbarOptions(
@@ -180,7 +189,9 @@ class _FirePageWidgetState extends State<FirePage> {
                   paste: false,
                 ),
                 decoration: new InputDecoration.collapsed(
-                    hintText: "Enter any other information (256 max)"),
+                    hintText: "Enter any other information (256 max)",
+                    hintStyle:
+                        TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
                 style: TextStyle(color: Colors.white),
                 inputFormatters: <TextInputFormatter>[
                   LengthLimitingTextInputFormatter(256),
@@ -194,10 +205,14 @@ class _FirePageWidgetState extends State<FirePage> {
                   padding: new EdgeInsets.all(20.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(20.0),
-                      side: BorderSide(color: Colors.red)),
+                      side: BorderSide(color: Colors.white)),
                   child: Text('Submit'),
-                  onPressed: () async {
-                    _userLocation = await _getLocation();
+                  onPressed: () {
+                    _getLocation().then((value) {
+                      setState(() {
+                        userLocation = value;
+                      });
+                    });
                     String encodeName;
                     String encodeNumber;
                     String encodedAdditional;
@@ -261,7 +276,7 @@ class _FirePageWidgetState extends State<FirePage> {
                       encodedAdditional = 'N/A';
                     }
                     encodedReport = _report;
-                    encodedLocation = _userLocation.toString();
+                    encodedLocation = userLocation.toString();
                     var values = {
                       "timestamp": encodedDateTime,
                       "required_responders": encodedService,
@@ -278,14 +293,16 @@ class _FirePageWidgetState extends State<FirePage> {
                     final Json = json.encode(values);
                     _postReport(Json).then((reportIDValue) {
                       _reportID = reportIDValue;
+                      print(_reportID);
                       Navigator.pop(context, _reportID);
                     });
                     return showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          //TODO remove the json pop ups
-                          content: Text(Json + "\nYour report was submitted"),
+                          // Retrieve the text the user has entered by using the
+                          // TextEditingController.
+                          content: Text(Json),
                         );
                       },
                     );
@@ -301,7 +318,6 @@ class _FirePageWidgetState extends State<FirePage> {
   }
 }
 
-//This gets the users current location
 Future<Position> _getLocation() async {
   var currentLocation;
   try {
@@ -313,7 +329,6 @@ Future<Position> _getLocation() async {
   return currentLocation;
 }
 
-//This will create objects to allow for easy parsing of a json file containing report id
 class ReportID {
   final int reportID;
   ReportID({this.reportID});
@@ -327,7 +342,6 @@ class ReportID {
   }
 }
 
-//This will actually post the json file to the server
 Future<int> _postReport(Object jsonData) async {
   final response = await http.put('http://18.212.156.43:80/add_report',
       headers: {
@@ -338,6 +352,7 @@ Future<int> _postReport(Object jsonData) async {
   if (response.statusCode == 200) {
     return ReportID.fromJson(json.decode(response.body)).getReportID;
   } else {
+    print(response.statusCode);
     throw Exception('Report was not submitted');
   }
 }
