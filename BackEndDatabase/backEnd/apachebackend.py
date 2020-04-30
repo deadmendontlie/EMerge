@@ -20,6 +20,7 @@ from findClosestMuni import getMunis
 # Authors: George Clelland, Jarret Strickon, and Nickolas Stocker
 # Class: Senior Project
 # Project Name: EmergeServ
+# Last Update: 4/30/2020
 
 app = Flask(__name__)
 CORS(app)
