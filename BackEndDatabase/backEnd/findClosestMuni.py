@@ -16,7 +16,7 @@ muniDict = {}
 # Recieves: <dict> municipalities, <String> reportGPS
 def getMunis(municipalities, reportGPS):
     global muniDict
-    closestMuni = 1 # Default muni if muni or report GPS coordinates are invalid
+    closestMuni = 21 # Default muni if muni or report GPS coordinates are invalid
 
     # Try/catch to compensate for invalid muni/report GPS data format
     try:
