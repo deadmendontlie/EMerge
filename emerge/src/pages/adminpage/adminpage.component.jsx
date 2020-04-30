@@ -7,6 +7,7 @@ import './adminpage.styles.scss';
 
 const cn = (...args) => args.filter(Boolean).join(' ')
 
+// creating our personalized tab
 const Tab = ({ children }) => {
 	const { isActive, onClick } = useTabState()
 
@@ -74,14 +75,30 @@ class AdminPage extends React.Component {
               }, (error) => {
                 console.log(error);
               })
+	}
+	
+	componentDidUpdate() {
+        axios.get('http://18.212.156.43/get_all_muni')
+            .then((response) => {
+                console.log(response.data);
+                const muni = response.data;
+                this.setState({ muni });
+              }, (error) => {
+                console.log(error);
+              })
     }
 	
 	//Creates the admin page and fills out information where needed
+    //Has three tabs that are able to:
+    //    add a new municipality
+    //    add a new service to a municipality
+    //    see all the current municipalities in the database
 	render() {
+		//Filling out dropdown for municipalities
 		const municipalities = this.state.muni.map(function(item) {
 			return <option value={item.municipality_id}>{item.name}</option>
 		})
-
+		 //Filling out list of municipalities
 		const munilist = this.state.muni.map(function(item) {
 			return <tr>{item.name}</tr>
 		})
@@ -93,7 +110,7 @@ class AdminPage extends React.Component {
 						<div className="tab-list">
 							<Tab>Add Municipality</Tab>
 							<Tab>Add Service</Tab>
-							<Tab>List of Municipality and Services</Tab>
+							<Tab>List of Municipalities</Tab>
 						</div>
 						<div className="tab-progress"></div>
 						<Panel>
