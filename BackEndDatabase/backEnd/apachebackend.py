@@ -7,11 +7,19 @@ from flask_cors import CORS, cross_origin
 import sqlalchemy as db
 from sqlalchemy.orm import sessionmaker
 import json
-
 import importlib
 module = "findClosestMuni"
 importlib.import_module(module)
 from findClosestMuni import getMunis
+# This is the backend code and database connection to allow our EmergeServ projec to function. EmergeServ allows people to use an phone
+# application to file a report of criminal, or dangerous activity
+# The website is for first responders where they can view incoming reports and assign Emergency Responders to act on these reports
+# This is the all of the code to hit the required endpoints for the Application side of the project, and the Website side of the project
+# Using sqlalchemy we are able to connect the endpoints to our MySQL database to view, update, and modify the database from the application
+# and/or the website given it is in their functionality
+# Authors: George Clelland, Jarret Strickon, and Nickolas Stocker
+# Class: Senior Project
+# Project Name: EmergeServ
 
 app = Flask(__name__)
 CORS(app)
@@ -45,7 +53,7 @@ responds = db.Table('Responds', metadata, autoload=True, autoload_with=engine)
 @app.route('/get_all_agency', methods=['GET', 'OPTIONS'])
 @cross_origin()
 def get_all_agency():
-
+     #query to get all of the Emergency Response Agencies
      query = db.select([emerRespAgency])
      
      queryResult = session.execute(query)
@@ -69,7 +77,7 @@ def get_all_agency():
 @app.route('/get_all_muni', methods=['GET', 'OPTIONS'])
 @cross_origin()
 def get_all_muni():
-
+     #query to get all of the Municipalities
      query = db.select([municipality])
      
      queryResult = session.execute(query)
@@ -97,6 +105,7 @@ def get_muni_by_email():
      request_data = request.get_json()
      muniEmail = request_data['email']
 
+     #query to get the municipality based on email
      db.select([municipality]).where(municipality.c.email == muniEmail)
      query = db.select([municipality])
      
@@ -129,6 +138,7 @@ def get_all_muni_services():
      request_data = request.get_json()
      muniId = request_data['municipality_id']
      
+     #query to get all of the Response agencies of each Municipality
      query = db.select([emerRespAgency]).where(emerRespAgency.c.municipality_id == muniId)
 
      queryResult = session.execute(query)
@@ -152,7 +162,7 @@ def get_all_muni_services():
 @cross_origin()
 def get_muni_reports():
 
-    #get municipality_id
+    #get municipality_id from input JSON
     request_data = request.get_json()
     muni_id = request_data['municipality_id']
 
@@ -179,14 +189,15 @@ def get_muni_reports():
 @app.route('/get_report_responders', methods={'POST', 'OPTIONS'})
 @cross_origin()
 def get_report_responders():
-
+     #get input JSON
      req_data = request.get_json()
-          
      reportId = req_data['report_id']
 
      print(reportId)
-
+    
      joinClause = responds.join(emerRespAgency)
+
+     #query to get the EmergencyResponseAgencies assigned to a report
      query = db.select([emerRespAgency]).select_from(joinClause).where(responds.c.report_id == reportId)
 
      queryResult = session.execute(query)
@@ -207,11 +218,12 @@ def get_report_responders():
 #returns: JSON same as input
 @app.route('/change_report_gps', methods = ['PUT'])
 def change_report_gps():
+     #get input JSON
      req_data = request.get_json()
-
      gpsCoord = req_data['GPS']
      reportNum = req_data['report_id']
      
+     #query to update the GPS status of a report
      query = update(report).where(report.c.report_id==reportNum).values(GPS=gpsCoord)
 
      session.execute(query)
@@ -229,9 +241,8 @@ def change_report_gps():
 #returns: JSON with report_id of inserted report
 @app.route('/add_report', methods = ['PUT'])
 def add_report():
+     #get input JSON
      req_data = request.get_json()
-
-     #reportNum = req_data['report_id'] ####this should be autofilled and gotten from mySQL
      reportTimeStamp = req_data['timestamp']
      reportRequiredResponders= req_data['required_responders']
      reportStatus = req_data['status']
@@ -241,12 +252,13 @@ def add_report():
      reportPhone = req_data['phone']
      reportPhoto = req_data['photo']
      reportMessage = req_data['message']
+
      # Assign report to closest municipality based on GPS coordinates
      reportMunicipalityId = assign_report_to_muni(reportGPS)
      reportLevel = req_data['report_level']
      reportType = req_data['report_type']
     
-     
+     #query to insert values to add a new report
      query = report.insert().values(timestamp=reportTimeStamp,
             required_responders = reportRequiredResponders,
             status = reportStatus,
@@ -254,7 +266,6 @@ def add_report():
             GPS = reportGPS,
             name = reportName,
             phone = reportPhone,
-            #photo = reportPhoto,
             message = reportMessage,
             municipality_id = reportMunicipalityId,
             report_level = reportLevel,
@@ -275,14 +286,13 @@ def add_report():
 @app.route('/add_emer_service', methods = ['PUT', 'OPTIONS'])
 @cross_origin()
 def add_emer_service ():
+     #get input JSON
      req_data = request.get_json()
-
-     #reportNum = req_data['report_id'] ####this should be autofilled and gotten from mySQL
-
      serviceType = req_data['service_type']
      EmName = req_data['name']
      muniId = req_data['municipality_id']
 
+     #query to add a new Emergency Service
      query = emerRespAgency.insert().values(service_type=serviceType, name = EmName, municipality_id = muniId)
 
 
@@ -305,7 +315,7 @@ def get_report():
      req_data = request.get_json()
      reportId = req_data['report_id']
 
-     #build query
+     #build query to get a report
      query = report.select().where(report.c.report_id == reportId)
 
      #execute query and store resolt proxy
@@ -338,13 +348,12 @@ def get_report():
 def add_muni():
      #get input JSON
      request_data = request.get_json()
-
      coordinates = request_data['GPS_coord']
      muniName = request_data['name']
      muniState = request_data['state']
      muniEmail = request_data['email']
 
-        
+     #query to add a new municipality to the Municipality Table
      query = insert(municipality).values(GPS_coord = coordinates,
              name = muniName,
              state = muniState,
@@ -365,10 +374,10 @@ def add_muni():
 def assign_report_responders():
      #get input JSON
      request_data = request.get_json()
-
      reportId = request_data['report_id']
      agencyId = request_data['agency_id']
-       
+     
+     #query to insert the input JSON and assign the responders to a report
      query = insert(responds).values(report_id = reportId,
              agency_id = agencyId)
 
@@ -391,7 +400,8 @@ def update_status():
     request_data = request.get_json()
     reportId = request_data['report_id']
     newStatus = request_data['status']
-
+    
+    #query to udpate status of a report
     query = update(report).where(report.c.report_id == reportId).\
             values(status = newStatus)
     session.execute(query)
@@ -412,7 +422,8 @@ def get_status():
     #get input JSON
     request_data = request.get_json()
     reportId = request_data['report_id']
-       
+    
+    #query to get the status of a report
     query = select([report.c.status]).where(report.c.report_id == reportId)
     queryResult = session.execute(query)
     
