@@ -1,3 +1,16 @@
+# This is the backend code and database connection to allow our EmergeServ projec to function. EmergeServ allows people to use an phone
+# application to file a report of criminal, dangerous, or emergency event.
+# The website is for first responders where they can view incoming reports and assign Emergency Responders to act on these reports
+# This is the all of the code to hit the required endpoints (using Flask API) for the Application side of the project, 
+# and the Website side of the project.
+# Using sqlalchemy we are able to connect the endpoints to our MySQL database to view, update, and modify the database from the application
+# and/or the website given it is in their functionality.
+# Authors: George Clelland, Jarret Strickon, and Nickolas Stocker
+# Class: Senior Project
+# Professor: James Strate
+# Project Name: EmergeServ
+# Last Updated: 4/30/2020
+
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
 from flask import jsonify
@@ -11,16 +24,6 @@ import importlib
 module = "findClosestMuni"
 importlib.import_module(module)
 from findClosestMuni import getMunis
-# This is the backend code and database connection to allow our EmergeServ projec to function. EmergeServ allows people to use an phone
-# application to file a report of criminal, or dangerous activity
-# The website is for first responders where they can view incoming reports and assign Emergency Responders to act on these reports
-# This is the all of the code to hit the required endpoints for the Application side of the project, and the Website side of the project
-# Using sqlalchemy we are able to connect the endpoints to our MySQL database to view, update, and modify the database from the application
-# and/or the website given it is in their functionality
-# Authors: George Clelland, Jarret Strickon, and Nickolas Stocker
-# Class: Senior Project
-# Project Name: EmergeServ
-# Last Update: 4/30/2020
 
 app = Flask(__name__)
 CORS(app)
@@ -256,6 +259,7 @@ def add_report():
 
      # Assign report to closest municipality based on GPS coordinates
      reportMunicipalityId = assign_report_to_muni(reportGPS)
+
      reportLevel = req_data['report_level']
      reportType = req_data['report_type']
     
@@ -457,7 +461,7 @@ def test():
 
 # Provids closest municipality to report GPS
 #receives: String<GPS coordinate of report> format: "Lat: xx.xxxxxxx, Long: xxx.xxxxx"
-#returns: int<municipality_id of closest municipality
+#returns: int<municipality_id> of closest municipality
 def assign_report_to_muni(reportGPS):
      munis = get_all_muni().get_json()
      closestMuni = getMunis(munis, reportGPS)
