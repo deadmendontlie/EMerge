@@ -2,6 +2,10 @@ import React from 'react';
 
 import './form-input.styles.scss';
 
+// this form input was specifically createad 
+// to accomodate for the sign in and sign up components
+// instead of using the regular one I createad
+// one that best suits our needs.
 const FormInput = ({ handleChange, label, ...otherProps}) =>
 (
     <div className="group">
