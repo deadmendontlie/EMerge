@@ -12,6 +12,16 @@
   margin: 80px 0;
 }
 
+.homepage {
+  position: none;
+  z-index: -100px;
+}
+
+.positionTab {
+  position: none;
+  z-index: -100px;
+}
+
 .tab-list {
   display: flex;
 }

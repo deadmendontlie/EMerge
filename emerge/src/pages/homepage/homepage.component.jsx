@@ -6,6 +6,7 @@ import UserTable from '../../components/tables/usertable.component'
 
 const cn = (...args) => args.filter(Boolean).join(' ')
 
+// Creating our personalized tab
 const Tab = ({ children }) => {
 	const { isActive, onClick } = useTabState()
 
@@ -22,8 +23,8 @@ class HomePage extends React.Component {
 	
 	render() {
 		return (
-			<div className='homepage'>
-				<Tabs>
+			<div className='homepage' id="Homepage">
+				<Tabs className="positionTab">
 					<div className="tabs">
 						<div className="tab-list">
 							<Tab>Incoming</Tab>
