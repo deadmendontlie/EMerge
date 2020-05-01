@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -7,21 +6,22 @@ import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class MedicalPage extends StatefulWidget {
+class NonEmergenciesPage extends StatefulWidget {
   @override
-  _MedicalPageWidgetState createState() => _MedicalPageWidgetState();
+  _NonEmergenciesPageWidgetState createState() =>
+      _NonEmergenciesPageWidgetState();
 }
 
-class _MedicalPageWidgetState extends State<MedicalPage> {
+int _reportID;
+String _service; //service selected in the drop down
+
+class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
   Position _userLocation;
   @override
   initState() {
     super.initState();
   }
 
-  int _reportID;
-  String _service; //service selected in the drop down
-  String _report; //what type of report is selected
   @override
   Widget build(BuildContext context) {
     //These take in our text input to be used
@@ -31,77 +31,60 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
     return MaterialApp(
         home: Scaffold(
       backgroundColor: Color(0xFF2d3447),
-
       //blue header
       appBar: AppBar(
         backgroundColor: Color(0xFF2D3439),
-        title: Text('Medical Report'),
+        title: Text('Non-Emergencies Report'),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           tooltip: 'Back',
           onPressed: () {
-            //Navigator.pop(context);
             Navigator.pop(context);
           },
         ),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
             //TODO Clean up all of the text and add all of the proper report types
+            //TODO add a verification pop up before they submit the report
+            //This pge will be able to send to medical fire and police as well but will be labelled differently
             Text(
-              "Please Select What Services are Required as well(Defaults to Just Medical)",
+              "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
               style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.normal,
                   color: Colors.white),
             ),
             DropdownButton<String>(
-                hint: Text('Please Choose One',
-                    style: TextStyle(color: Colors.white)),
-                items: <String>['None', 'Fire', 'Police', 'Fire and Police']
-                    .map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (String changed) {
-                  _service = changed;
-                  setState(() {});
-                },
-                value: _service,
-                style: TextStyle(color: Colors.blueGrey[600])), //DropdownButton
-            Text(
-              "Please Select Type of Report",
-              style: TextStyle(
-                  fontSize: 15.0,
-                  fontWeight: FontWeight.normal,
-                  color: Colors.white),
+              //Service drop down
+
+              hint: Text(
+                'Please Choose One',
+                style: TextStyle(color: Colors.white),
+              ),
+
+              items: <String>[
+                'None',
+                'Medical',
+                'Police',
+                'Fire',
+                'Fire and Medical',
+                'Fire and Police',
+                'Medical and Police'
+              ].map((String value) {
+                return new DropdownMenuItem<String>(
+                  value: value,
+                  child: new Text(value),
+                );
+              }).toList(),
+              onChanged: (String changed) {
+                _service = changed;
+                setState(() {});
+              },
+              value: _service,
+              style: TextStyle(color: Colors.blueGrey[600]),
             ),
-            DropdownButton<String>(
-                hint: Text(
-                  'No report type is selected',
-                  style: TextStyle(color: Colors.white),
-                ),
-                items: <String>[
-                  'Heart Attack',
-                  'Breathing Issue',
-                  'Bleeding',
-                  'Not clear'
-                ].map((String value) {
-                  return new DropdownMenuItem<String>(
-                    value: value,
-                    child: new Text(value),
-                  );
-                }).toList(),
-                onChanged: (String changed) {
-                  _report = changed;
-                  setState(() {});
-                },
-                value: _report,
-                style: TextStyle(color: Colors.blueGrey[600])), //DropdownButton
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",
               style: TextStyle(
@@ -109,7 +92,6 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   fontWeight: FontWeight.normal,
                   color: Colors.white),
             ),
-
             TextFormField(
               controller: myControllerName,
               textAlign: TextAlign.center,
@@ -122,12 +104,9 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                 paste: false,
               ),
               decoration: new InputDecoration.collapsed(
-                hintText: "Please enter your name",
-                hintStyle: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.blueGrey[50],
-                ),
-              ),
+                  hintText: "Please enter your name",
+                  hintStyle:
+                      TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(color: Colors.white),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(45),
@@ -159,7 +138,10 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   hintText: "Please enter phone number",
                   hintStyle:
                       TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(14),
                 WhitelistingTextInputFormatter.digitsOnly,
@@ -189,11 +171,15 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                       "Enter any other information Enter any other information",
                   hintStyle:
                       TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                  fontSize: 15.0,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.white),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(256),
                 WhitelistingTextInputFormatter(new RegExp(
-                    '[A-Za-z\\.\\s]')), //This will allow for letters, spaces, and periods
+                    '[A-Za-z\\.\\s]')), //This will allow for letters and periods
+                //BlacklistingTextInputFormatter(new RegExp('[\\,]')), //This stops commas and periods
               ],
             ),
             Center(
@@ -209,7 +195,6 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   String encodeNumber;
                   String encodedAdditional;
                   String encodedService;
-                  String encodedReport;
                   String encodedLocation;
                   String encodedDateTime;
                   DateTime now = DateTime.now();
@@ -217,13 +202,17 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                       DateFormat("yyyy-MM-dd HH:mm:ss").format(now);
                   if (_service != null) {
                     if (_service == 'None') {
+                      encodedService = "FPH";
+                    } else if (_service == 'Medical') {
                       encodedService = "H";
-                    } else if (_service == 'Fire') {
-                      encodedService = "FH";
                     } else if (_service == 'Police') {
+                      encodedService = "P";
+                    } else if (_service == 'Medical and Police') {
                       encodedService = "PH";
                     } else if (_service == 'Fire and Police') {
-                      encodedService = "FPH";
+                      encodedService = "FP";
+                    } else if (_service == 'Fire and Medical') {
+                      encodedService = "FH";
                     }
                   } else {
                     return showDialog(
@@ -237,18 +226,7 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                       },
                     );
                   }
-                  if (_report == null) {
-                    return showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          // Retrieve the text the user has entered by using the
-                          // TextEditingController.
-                          content: Text('Please select a report type'),
-                        );
-                      },
-                    );
-                  }
+
                   if (myControllerName.text.toString() != "" ||
                       myControllerName.text.toString() != "\\+") {
                     encodeName = myControllerName.text;
@@ -265,7 +243,6 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                   } else {
                     encodedAdditional = 'N/A';
                   }
-                  encodedReport = _report;
                   encodedLocation = _userLocation.toString();
                   var values = {
                     "timestamp": encodedDateTime,
@@ -277,8 +254,8 @@ class _MedicalPageWidgetState extends State<MedicalPage> {
                     "phone": encodeNumber,
                     "photo": null,
                     "message": encodedAdditional,
-                    "report_level": "Emergency",
-                    "report_type": encodedReport
+                    "report_level": "Non Emergency",
+                    "report_type": 'N/A'
                   };
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {

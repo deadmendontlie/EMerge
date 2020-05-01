@@ -24,6 +24,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
 
   @override
   Widget build(BuildContext context) {
+    //These take in our text input to be used
     final myControllerName = TextEditingController();
     final myControllerNumber = TextEditingController();
     final myControllerAdditionalInformation = TextEditingController();
@@ -47,7 +48,6 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
           children: [
             //TODO Clean up all of the text and add all of the proper report types
             //TODO add a verification pop up before they submit the report
-            //TODO Remove the dialog at the end when this is done
             //This pge will be able to send to medical fire and police as well but will be labelled differently
             Text(
               "Please Select What Services are Required as well(Defaults to Fire, Police, and Medical)",
@@ -83,7 +83,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                 setState(() {});
               },
               value: _service,
-              style:TextStyle(color: Colors.blueGrey[600]),
+              style: TextStyle(color: Colors.blueGrey[600]),
             ),
             Text(
               "Please enter your name otherwise this will be submitted Anonymously",
@@ -105,7 +105,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
               ),
               decoration: new InputDecoration.collapsed(
                   hintText: "Please enter your name",
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
+                  hintStyle:
+                      TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(color: Colors.white),
               inputFormatters: <TextInputFormatter>[
                 LengthLimitingTextInputFormatter(45),
@@ -135,7 +136,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
               ),
               decoration: new InputDecoration.collapsed(
                   hintText: "Please enter phone number",
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
+                  hintStyle:
+                      TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.normal,
@@ -167,7 +169,8 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
               decoration: new InputDecoration.collapsed(
                   hintText:
                       "Enter any other information Enter any other information",
-                  hintStyle: TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
+                  hintStyle:
+                      TextStyle(fontSize: 15.0, color: Colors.blueGrey[100])),
               style: TextStyle(
                   fontSize: 15.0,
                   fontWeight: FontWeight.normal,
@@ -186,17 +189,12 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                     borderRadius: new BorderRadius.circular(20.0),
                     side: BorderSide(color: Colors.white)),
                 child: Text('Submit'),
-                onPressed: () {
-                  _getLocation().then((value) {
-                    setState(() {
-                      _userLocation = value;
-                    });
-                  });
+                onPressed: () async {
+                  _userLocation = await _getLocation();
                   String encodeName;
                   String encodeNumber;
                   String encodedAdditional;
                   String encodedService;
-                  String encodedReport;
                   String encodedLocation;
                   String encodedDateTime;
                   DateTime now = DateTime.now();
@@ -262,7 +260,6 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                   final Json = json.encode(values);
                   _postReport(Json).then((reportIDValue) {
                     _reportID = reportIDValue;
-                    print(_reportID);
                     Navigator.pop(context, _reportID);
                   });
                   return showDialog(
@@ -271,7 +268,7 @@ class _NonEmergenciesPageWidgetState extends State<NonEmergenciesPage> {
                       return AlertDialog(
                         // Retrieve the text the user has entered by using the
                         // TextEditingController.
-                        content: Text(Json),
+                        content: Text("Your report was submitted"),
                       );
                     },
                   );
@@ -319,7 +316,6 @@ Future<int> _postReport(Object jsonData) async {
   if (response.statusCode == 200) {
     return ReportID.fromJson(json.decode(response.body)).getReportID;
   } else {
-    print(response.statusCode);
     throw Exception('Report was not submitted');
   }
 }
