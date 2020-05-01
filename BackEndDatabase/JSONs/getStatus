@@ -1,5 +1,5 @@
 Methods: POST, OPTIONS
-URL: 18.212.156.43/get_report
+eURL: 18.212.156.43/get_status
 
 input JSON:
 {
