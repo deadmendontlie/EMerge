@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter', initialRoute: '/', routes: {
+    return MaterialApp(title: 'Emerge', initialRoute: '/', routes: {
       //starting page
       '/': (context) => StartScreen(),
       //other pages
@@ -47,6 +47,10 @@ class StartScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     _localFile;
+    //TODO Add a way to check to see if they submitted a emergency report after opening it
+    if (_getReportID() != -1) {
+      _timer(0);
+    }
     return Scaffold(
       backgroundColor: Color(0xFF2d3447),
       appBar: AppBar(
