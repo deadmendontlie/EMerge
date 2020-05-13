@@ -35,5 +35,5 @@ export class GMap extends React.Component {
 // this is my google API key from GCP 
 // gives us access to the Map
 export default GoogleApiWrapper({
-  apiKey: 'AIzaSyCVYm77ZYuWWdbcQ2zrbEv_yg1DH_MyvJY'
+  apiKey:
 })(GMap);
